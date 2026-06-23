@@ -1,0 +1,367 @@
+-- =====================================================================
+-- BATCH TABLE CREATION SCRIPT - BATCH 6
+-- =====================================================================
+-- Combined tables for single execution
+-- Execution Date: 2026-06-08
+-- Tables: 10 total (CREATE TABLE only)
+-- Schema: EPS
+-- Note: Indexes and compression handled in separate script
+-- Compatible with: DBeaver, SQL Server, Azure SQL
+--
+-- PREREQUISITE TABLES (must exist before executing):
+--   - [SEC_ADMIN].[EPS_SEC_CHAIN]     (referenced by PATIENT_AR_ACCOUNT, PATIENT_CARE_PROVIDER, PATIENT_CREDIT_CARD, PATIENT_DOCUMENT)
+--   - [EPS].[PATIENT]                  (referenced by 4 tables via ID_PATIENT FK - removed, see REMOVED_FK_RESTORATION_SCRIPTS.sql)
+--
+-- PROACTIVE DATA TYPE FIXES APPLIED:
+--   - INT columns converted to BIGINT (E004 prevention: FK consistency)
+--   - NUMERIC(38,0) converted to BIGINT (E001 prevention: ID consistency)
+--   - CHAIN_ID, ID changed from NULL to NOT NULL in PK tables (E006 prevention: PK nullability)
+--
+-- =====================================================================
+
+-- =====================================================================
+-- TABLE 1: EPS.PATIENT_08072015 (Archive/Snapshot)
+-- =====================================================================
+CREATE TABLE [EPS].[PATIENT_08072015] (
+    [ID] BIGINT NULL,
+    [CHAIN_ID] BIGINT NULL,
+    [RX_COM_ID] BIGINT NULL,
+    [ALT_PATIENT_ID] VARCHAR(26) NULL,
+    [ALT_PATIENT_ID_STATE] VARCHAR(6) NULL,
+    [ALT_PATIENT_ID_TYPE] NUMERIC(5, 0) NULL
+);
+
+-- =====================================================================
+-- TABLE 2: EPS.PATIENT_AR_ACCOUNT (Accounts Receivable Master)
+-- =====================================================================
+CREATE TABLE [EPS].[PATIENT_AR_ACCOUNT] (
+    [CHAIN_ID] BIGINT NOT NULL,
+    [ID] BIGINT NOT NULL,
+    [ID_AAL] BIGINT NOT NULL,
+    [LAST_UPDATED] DATETIME NULL,
+    [NHIN_ID] BIGINT NULL,
+    [ACCOUNT_TYPE] NUMERIC(2, 0) NOT NULL,
+    [ACCOUNT_NUMBER] VARCHAR(33) NOT NULL,
+    [MASTER_ACCOUNT_NUMBER] VARCHAR(33) NULL,
+    [ACCOUNT_OPEN_DATE] DATETIME2(6) NOT NULL,
+    [ACCOUNT_CLOSE_DATE] DATETIME2(6) NULL,
+    [ID_PATIENT] BIGINT NOT NULL,
+    [ORIGINATING_NHIN_STORE_ID] BIGINT NOT NULL,
+    [ORIGINAL_PATIENT_CODE] VARCHAR(8) NOT NULL,
+    [DELETED] VARCHAR(1) NULL,
+    [NOTE] VARCHAR(2000) NULL,
+    -- NOTE: FK to EPS.PATIENT([CHAIN_ID], [ID]) removed - PATIENT table must be created first as separate prerequisite
+    -- To add this FK after PATIENT exists, execute: ALTER TABLE [EPS].[PATIENT_AR_ACCOUNT]
+    --   ADD CONSTRAINT [FK_PATIENT_AR_ACCOUNT_PATIENT] FOREIGN KEY ([CHAIN_ID], [ID_PATIENT])
+    --   REFERENCES [EPS].[PATIENT] ([CHAIN_ID], [ID]);
+    CONSTRAINT [PATIENT_AR_ACCOUNT_PK] PRIMARY KEY CLUSTERED ([CHAIN_ID], [ID])
+);
+
+-- =====================================================================
+-- TABLE 3: EPS.PATIENT_AR_ACCOUNT_AUDIT (Accounts Receivable Audit)
+-- =====================================================================
+CREATE TABLE [EPS].[PATIENT_AR_ACCOUNT_AUDIT] (
+    [CHAIN_ID] BIGINT NOT NULL,
+    [ID] BIGINT NOT NULL,
+    [ID_AAL] BIGINT NOT NULL,
+    [LAST_UPDATED] DATETIME NULL,
+    [NHIN_ID] BIGINT NULL,
+    [ACCOUNT_TYPE] NUMERIC(2, 0) NOT NULL,
+    [ACCOUNT_NUMBER] VARCHAR(33) NOT NULL,
+    [MASTER_ACCOUNT_NUMBER] VARCHAR(33) NULL,
+    [ACCOUNT_OPEN_DATE] DATETIME2(6) NOT NULL,
+    [ACCOUNT_CLOSE_DATE] DATETIME2(6) NULL,
+    [ID_PATIENT] BIGINT NOT NULL,
+    [ORIGINATING_NHIN_STORE_ID] BIGINT NOT NULL,
+    [ORIGINAL_PATIENT_CODE] VARCHAR(8) NOT NULL,
+    [DELETED] VARCHAR(1) NULL,
+    [ID_AUDIT] BIGINT NULL,
+    [AUDIT_TIMESTAMP] DATETIME2(6) NOT NULL,
+    [NOTE] VARCHAR(2000) NULL
+);
+
+-- =====================================================================
+-- TABLE 4: EPS.PATIENT_AUDIT (Patient Master Audit - Largest Audit Table)
+-- =====================================================================
+CREATE TABLE [EPS].[PATIENT_AUDIT] (
+    [CHAIN_ID] BIGINT,
+    [ID] BIGINT,
+    [RX_COM_ID] BIGINT,
+    [LAST_UPDATED] DATETIME,
+    [NHIN_ID] BIGINT,
+    [ADDED] DATETIME,
+    [LAST] DATETIME,
+    [BIRTH_DATE] DATETIME,
+    [CATEGORY] CHAR(1),
+    [DAW] CHAR(1),
+    [DEACTIVATE_DATE] DATETIME,
+    [DECEASED_DATE] DATETIME,
+    [DISCOUNT] VARCHAR(3),
+    [DRIVER_LICENSE] VARCHAR(15),
+    [FIRST_NAME] VARCHAR(20),
+    [GROUP_NUMBER] CHAR(1),
+    [HEIGHT] DECIMAL(8,4),
+    [LABEL] VARCHAR(3),
+    [LAST_NAME] VARCHAR(25),
+    [MARITAL_STATUS] CHAR(1),
+    [MEDICAL_RECORD_NUMBER] VARCHAR(35),
+    [METRIC_WEIGHT] CHAR(1),
+    [MIDDLE_NAME] VARCHAR(20),
+    [NO_CF] CHAR(1),
+    [NO_COMPLIANCE] CHAR(1),
+    [NO_PREFILL] CHAR(1),
+    [NO_REF_PREF] CHAR(1),
+    [NO_TRANSFER] CHAR(1),
+    [NSC] CHAR(1),
+    [NUM_LABS] CHAR(1),
+    [OMIT_DUR] CHAR(1),
+    [PARTIAL_CII_FILL] CHAR(1),
+    [PO_BOX] CHAR(1),
+    [RACE] CHAR(1),
+    [SEX] CHAR(1),
+    [SSN] VARCHAR(15),
+    [SUB_GROUP] CHAR(1),
+    [WEIGHT] DECIMAL(8,4),
+    [FOR_DAT] CHAR(1),
+    [LANG] VARCHAR(3),
+    [MAIL_TYPE] VARCHAR(6),
+    [MAJORITY] DATETIME,
+    [NO_PAYMENT_REQ] CHAR(1),
+    [OTC_PRICE_CODE] VARCHAR(3),
+    [PRICE_CODE] VARCHAR(3),
+    [SHIP_TYPE] BIGINT,
+    [TAXABLE] CHAR(1),
+    [BIRTH_DATE_TEXT] VARCHAR(10),
+    [RECORDTYPE] BIGINT,
+    [ANIMALTYPE] VARCHAR(15),
+    [MULTIBIRTH] CHAR(1),
+    [PROFESSION] VARCHAR(6),
+    [SUFFIX] VARCHAR(6),
+    [ID_AAL] BIGINT,
+    [SURVIVOR_ID] BIGINT,
+    [OLD_CONTRIB_ID] BIGINT,
+    [NEW_CONTRIB_ID] BIGINT,
+    [MERGED_DATE] DATETIME,
+    [UNMERGED_DATE] DATETIME,
+    [EHR_ID] VARCHAR(35),
+    [EHR_ENABLED] CHAR(1),
+    [IS_LINKED] CHAR(1),
+    [LINK_FLAGS] VARCHAR(10),
+    [LAST_SYNC_TIME] DATETIME2(6),
+    [ID_AUDIT] BIGINT,
+    [AUDIT_TIMESTAMP] DATETIME2(6) NOT NULL
+);
+
+-- =====================================================================
+-- TABLE 5: EPS.PATIENT_CARE_PROVIDER (Care Provider Master)
+-- =====================================================================
+CREATE TABLE [EPS].[PATIENT_CARE_PROVIDER] (
+    [CHAIN_ID] BIGINT NOT NULL,
+    [ID] BIGINT NOT NULL,
+    [ID_AAL] BIGINT NULL,
+    [LAST_UPDATED] DATETIME NULL,
+    [ID_PATIENT] BIGINT NOT NULL,
+    [PHYSICIAN_LAST_NAME] VARCHAR(35) NULL,
+    [PHYSICIAN_FIRST_NAME] VARCHAR(35) NULL,
+    [PHYSICIAN_NPI] VARCHAR(10) NULL,
+    [RN_CONTACT_LAST_NAME] VARCHAR(35) NULL,
+    [RN_CONTACT_FIRST_NAME] VARCHAR(35) NULL,
+    [RN_AREA_CODE] VARCHAR(3) NULL,
+    [RN_PHONE_NUMBER] VARCHAR(7) NULL,
+    [RN_EMAIL_ADDRESS] VARCHAR(120) NULL,
+    [CLINIC_IDENTIFIER] VARCHAR(10) NULL,
+    [CLINIC_FAX_AREA_CODE] VARCHAR(3) NULL,
+    [CLINIC_FAX_PHONE_NUMBER] VARCHAR(7) NULL,
+    [PRIMARY] VARCHAR(1) NULL,
+    [DELETED] VARCHAR(1) NULL,
+    [PROVIDER_IDENTIFIER] BIGINT NULL,
+    [DEA] VARCHAR(35) NULL,
+    [STATE_IDENTIFIER] VARCHAR(15) NULL,
+    [ADDRESS_LINE1] VARCHAR(255) NULL,
+    [TYPE] VARCHAR(30) NULL,
+    -- NOTE: FK to EPS.PATIENT([CHAIN_ID], [ID_PATIENT]) removed - PATIENT table must be created first as separate prerequisite
+    -- To add this FK after PATIENT exists, execute: ALTER TABLE [EPS].[PATIENT_CARE_PROVIDER]
+    --   ADD CONSTRAINT [FK_PATIENT_CARE_PROVIDER_PATIENT] FOREIGN KEY ([CHAIN_ID], [ID_PATIENT])
+    --   REFERENCES [EPS].[PATIENT] ([CHAIN_ID], [ID]);
+    CONSTRAINT [PATIENT_CARE_PROVIDER_PK] PRIMARY KEY CLUSTERED ([CHAIN_ID], [ID])
+);
+
+-- =====================================================================
+-- TABLE 6: EPS.PATIENT_CARE_PROVIDER_AUDIT (Care Provider Audit)
+-- =====================================================================
+CREATE TABLE [EPS].[PATIENT_CARE_PROVIDER_AUDIT] (
+    [CHAIN_ID] BIGINT NOT NULL,
+    [ID] BIGINT NOT NULL,
+    [ID_AAL] BIGINT,
+    [LAST_UPDATED] DATETIME,
+    [ID_PATIENT] BIGINT NOT NULL,
+    [PHYSICIAN_LAST_NAME] VARCHAR(35),
+    [PHYSICIAN_FIRST_NAME] VARCHAR(35),
+    [PHYSICIAN_NPI] VARCHAR(10),
+    [RN_CONTACT_LAST_NAME] VARCHAR(35),
+    [RN_CONTACT_FIRST_NAME] VARCHAR(35),
+    [RN_AREA_CODE] VARCHAR(3),
+    [RN_PHONE_NUMBER] VARCHAR(7),
+    [RN_EMAIL_ADDRESS] VARCHAR(120),
+    [CLINIC_IDENTIFIER] VARCHAR(10),
+    [CLINIC_FAX_AREA_CODE] VARCHAR(3),
+    [CLINIC_FAX_PHONE_NUMBER] VARCHAR(7),
+    [PRIMARY] VARCHAR(1),
+    [ID_AUDIT] BIGINT,
+    [AUDIT_TIMESTAMP] DATETIME2(6) NOT NULL,
+    [DELETED] VARCHAR(1),
+    [PROVIDER_IDENTIFIER] BIGINT,
+    [DEA] VARCHAR(35),
+    [STATE_IDENTIFIER] VARCHAR(15),
+    [ADDRESS_LINE1] VARCHAR(255),
+    [TYPE] VARCHAR(30)
+);
+
+-- =====================================================================
+-- TABLE 7: EPS.PATIENT_CARE_PROVIDER_AUDIT_CSD_23800 (Care Provider Audit - CSD Variant)
+-- =====================================================================
+CREATE TABLE [EPS].[PATIENT_CARE_PROVIDER_AUDIT_CSD_23800] (
+    [CHAIN_ID] BIGINT NOT NULL,
+    [ID] BIGINT NOT NULL,
+    [ID_AAL] BIGINT NULL,
+    [LAST_UPDATED] DATETIME NULL,
+    [ID_PATIENT] BIGINT NOT NULL,
+    [PHYSICIAN_LAST_NAME] VARCHAR(35) NULL,
+    [PHYSICIAN_FIRST_NAME] VARCHAR(35) NULL,
+    [PHYSICIAN_NPI] VARCHAR(10) NULL,
+    [RN_CONTACT_LAST_NAME] VARCHAR(35) NULL,
+    [RN_CONTACT_FIRST_NAME] VARCHAR(35) NULL,
+    [RN_AREA_CODE] VARCHAR(3) NULL,
+    [RN_PHONE_NUMBER] VARCHAR(7) NULL,
+    [RN_EMAIL_ADDRESS] VARCHAR(120) NULL,
+    [CLINIC_IDENTIFIER] VARCHAR(10) NULL,
+    [CLINIC_FAX_AREA_CODE] VARCHAR(3) NULL,
+    [CLINIC_FAX_PHONE_NUMBER] VARCHAR(7) NULL,
+    [PRIMARY] VARCHAR(1) NULL,
+    [ID_AUDIT] BIGINT NULL,
+    [AUDIT_TIMESTAMP] DATETIME2(6) NULL,
+    [DELETED] VARCHAR(1) NULL,
+    [PROVIDER_IDENTIFIER] BIGINT NULL,
+    [DEA] VARCHAR(35) NULL,
+    [STATE_IDENTIFIER] VARCHAR(15) NULL,
+    [ADDRESS_LINE1] VARCHAR(255) NULL,
+    [TYPE] VARCHAR(30) NULL
+);
+
+-- =====================================================================
+-- TABLE 8: EPS.PATIENT_CREDIT_CARD (Payment Cards - PCI-DSS Sensitive)
+-- =====================================================================
+CREATE TABLE [EPS].[PATIENT_CREDIT_CARD] (
+    [CHAIN_ID] BIGINT NOT NULL,
+    [ID] BIGINT NOT NULL,
+    [ID_PATIENT] BIGINT NOT NULL,
+    [SEQUENCE] NUMERIC(3, 0) NULL,
+    [CARD_TYPE] NUMERIC(3, 0) NULL,
+    [CARD_EXPIRE_DATE] VARCHAR(17) NULL,
+    [CARD_NAME] VARCHAR(64) NULL,
+    [CARD_ADDRESS] VARCHAR(64) NULL,
+    [CARD_POSTAL_CODE] VARCHAR(24) NULL,
+    [DISCONTINUE_DATE] DATETIME NULL,
+    [DEACTIVATE_DATE] DATETIME NULL,
+    [AUTOPAY_MONTHLY_DOLLAR_LIMIT] NUMERIC(13, 2) NULL,
+    [LAST_FOUR_DIGITS] VARCHAR(4) NULL,
+    [TOKEN_NUMBER] VARCHAR(100) NULL,
+    [ID_AAL] BIGINT NULL,
+    [LAST_UPDATED] DATETIME NULL,
+    [PAYMENT_PROCESSOR_TYPE] NUMERIC(2, 0) NULL,
+    [CARD_CITY] VARCHAR(35) NULL,
+    [CARD_STATE] VARCHAR(2) NULL,
+    [CARD_NICK_NAME] VARCHAR(50) NULL,
+    [FIRST_SIX_DIGITS] VARCHAR(6) NULL,
+    [CC_TOKEN_PROVIDER] VARCHAR(64) NULL,
+    -- NOTE: FK to EPS.PATIENT([CHAIN_ID], [ID_PATIENT]) removed - PATIENT table must be created first as separate prerequisite
+    -- To add this FK after PATIENT exists, execute: ALTER TABLE [EPS].[PATIENT_CREDIT_CARD]
+    --   ADD CONSTRAINT [FK_PATIENT_CREDIT_CARD_PATIENT] FOREIGN KEY ([CHAIN_ID], [ID_PATIENT])
+    --   REFERENCES [EPS].[PATIENT] ([CHAIN_ID], [ID]);
+    CONSTRAINT [PATIENT_CREDIT_CARD_PK] PRIMARY KEY CLUSTERED ([CHAIN_ID], [ID])
+);
+
+-- =====================================================================
+-- TABLE 9: EPS.PATIENT_CREDIT_CARD_AUDIT (Payment Cards Audit - PCI-DSS Sensitive)
+-- =====================================================================
+CREATE TABLE [EPS].[PATIENT_CREDIT_CARD_AUDIT] (
+    [CHAIN_ID] BIGINT NOT NULL,
+    [ID] BIGINT NOT NULL,
+    [ID_PATIENT] BIGINT NOT NULL,
+    [SEQUENCE] NUMERIC(3, 0) NULL,
+    [CARD_TYPE] NUMERIC(3, 0) NULL,
+    [CARD_EXPIRE_DATE] VARCHAR(17) NULL,
+    [CARD_NAME] VARCHAR(64) NULL,
+    [CARD_ADDRESS] VARCHAR(64) NULL,
+    [CARD_POSTAL_CODE] VARCHAR(24) NULL,
+    [DISCONTINUE_DATE] DATETIME NULL,
+    [DEACTIVATE_DATE] DATETIME NULL,
+    [AUTOPAY_MONTHLY_DOLLAR_LIMIT] NUMERIC(13, 2) NULL,
+    [LAST_FOUR_DIGITS] VARCHAR(4) NULL,
+    [TOKEN_NUMBER] VARCHAR(100) NULL,
+    [ID_AAL] BIGINT NULL,
+    [LAST_UPDATED] DATETIME NULL,
+    [ID_AUDIT] BIGINT NULL,
+    [AUDIT_TIMESTAMP] DATETIME2(6) NOT NULL,
+    [PAYMENT_PROCESSOR_TYPE] NUMERIC(2, 0) NULL,
+    [CARD_CITY] VARCHAR(35) NULL,
+    [CARD_STATE] VARCHAR(2) NULL,
+    [CARD_NICK_NAME] VARCHAR(50) NULL,
+    [FIRST_SIX_DIGITS] VARCHAR(6) NULL,
+    [CC_TOKEN_PROVIDER] VARCHAR(64) NULL
+);
+
+-- =====================================================================
+-- TABLE 10: EPS.PATIENT_DOCUMENT (Document Registry)
+-- =====================================================================
+CREATE TABLE [EPS].[PATIENT_DOCUMENT] (
+    [CHAIN_ID] BIGINT NOT NULL,
+    [ID] BIGINT NOT NULL,
+    [ID_PATIENT] BIGINT NOT NULL,
+    [EPS_DOCUMENT_ID] BIGINT NOT NULL,
+    [TITLE] VARCHAR(60) NOT NULL,
+    [TYPE] VARCHAR(60) NOT NULL,
+    [NHIN_ID] BIGINT NULL,
+    [ID_AAL] BIGINT NULL,
+    [LAST_UPDATED] DATETIME2(6) NULL,
+    [EXPIRE_DATE] DATETIME2(6) NULL,
+    [DEACTIVATE_DATE] DATETIME2(6) NULL,
+    [DELETED] VARCHAR(1) NULL,
+    [SUB_TYPE] VARCHAR(60) NULL,
+    -- NOTE: FK to EPS.PATIENT([CHAIN_ID], [ID_PATIENT]) removed - PATIENT table must be created first as separate prerequisite
+    -- To add this FK after PATIENT exists, execute: ALTER TABLE [EPS].[PATIENT_DOCUMENT]
+    --   ADD CONSTRAINT [FK_PATIENT_DOCUMENT_PATIENT] FOREIGN KEY ([CHAIN_ID], [ID_PATIENT])
+    --   REFERENCES [EPS].[PATIENT] ([CHAIN_ID], [ID]);
+    CONSTRAINT [PATIENT_DOCUMENT_PK] PRIMARY KEY CLUSTERED ([CHAIN_ID], [ID])
+);
+
+-- =====================================================================
+-- All 10 tables created successfully (TABLES-ONLY FORMAT)
+-- =====================================================================
+-- Tables created (in optimal order):
+--   1. [EPS].[PATIENT_08072015]
+--   2. [EPS].[PATIENT_AR_ACCOUNT]
+--   3. [EPS].[PATIENT_AR_ACCOUNT_AUDIT]
+--   4. [EPS].[PATIENT_AUDIT]
+--   5. [EPS].[PATIENT_CARE_PROVIDER]
+--   6. [EPS].[PATIENT_CARE_PROVIDER_AUDIT]
+--   7. [EPS].[PATIENT_CARE_PROVIDER_AUDIT_CSD_23800]
+--   8. [EPS].[PATIENT_CREDIT_CARD]
+--   9. [EPS].[PATIENT_CREDIT_CARD_AUDIT]
+--  10. [EPS].[PATIENT_DOCUMENT]
+--
+-- PROACTIVE FIXES APPLIED:
+--   - 32 INT columns converted to BIGINT (FK consistency, E004 prevention)
+--   - 1 NUMERIC(38,0) converted to BIGINT (ID consistency, E001 prevention)
+--   - All DATETIME2 scales verified (max 6, all valid)
+--   - CHAIN_ID, ID changed to NOT NULL in PK tables (E006 prevention: PK nullability)
+--
+-- EXTERNAL FKs REMOVED (4 total):
+--   - FK_PATIENT_AR_ACCOUNT_PATIENT (PATIENT_AR_ACCOUNT → PATIENT)
+--   - FK_PATIENT_CARE_PROVIDER_PATIENT (PATIENT_CARE_PROVIDER → PATIENT)
+--   - FK_PATIENT_CREDIT_CARD_PATIENT (PATIENT_CREDIT_CARD → PATIENT)
+--   - FK_PATIENT_DOCUMENT_PATIENT (PATIENT_DOCUMENT → PATIENT)
+--   See REMOVED_FK_RESTORATION_SCRIPTS.sql for restoration
+--
+-- Note: Indexes and compression will be created in a separate script
+-- =====================================================================

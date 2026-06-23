@@ -1,0 +1,20 @@
+-- TRIGGER: [SEC_ADMIN].[ESL_BIR] - Oracle to Azure SQL conversion
+-- Converted: BEFORE INSERT trigger with sequence generation
+
+IF OBJECT_ID('[SEC_ADMIN].[ESL_BIR]', 'TR') IS NOT NULL
+    DROP TRIGGER [SEC_ADMIN].[ESL_BIR];
+GO
+
+CREATE TRIGGER [SEC_ADMIN].[ESL_BIR]
+ON [SEC_ADMIN].[EPS_SEC_LOG]
+INSTEAD OF INSERT
+AS
+BEGIN
+    INSERT INTO [SEC_ADMIN].[EPS_SEC_LOG] (
+        [ID]
+    )
+    SELECT
+        NEXT VALUE FOR [SEC_ADMIN].[ESL_SEQ]
+    FROM inserted;
+END;
+GO

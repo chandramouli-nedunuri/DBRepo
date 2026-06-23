@@ -1,0 +1,49 @@
+-- =====================================================================
+-- CONVERTED: EPS.RENAL_MEASUREMENT_AUDIT
+-- =====================================================================
+-- Source: Oracle EPS
+-- Target: Azure SQL Server 2019+
+-- Conversion Date: May 29, 2026
+-- Status: BATCH 12, File 109
+
+-- Audit trail for renal measurement records
+
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+IF OBJECT_ID('[EPS].[RENAL_MEASUREMENT_AUDIT]', 'U') IS NOT NULL
+    DROP TABLE [EPS].[RENAL_MEASUREMENT_AUDIT]
+GO
+
+CREATE TABLE [EPS].[RENAL_MEASUREMENT_AUDIT] (
+    [CHAIN_ID] BIGINT NOT NULL,
+    [ID] BIGINT NOT NULL,
+    [ID_PATIENT] BIGINT NOT NULL,
+    [MEASUREMENT_DATE] DATETIME2(6) NULL,
+    [MEASUREMENT_TYPE] VARCHAR(50) NULL,
+    [MEASUREMENT_VALUE] DECIMAL(12,4) NULL,
+    [UNIT_OF_MEASURE] VARCHAR(20) NULL,
+    [CREATED_DATE] DATETIME2(6) NULL,
+    [AUDIT_TIMESTAMP] DATETIME2(6) NOT NULL,
+    CONSTRAINT [RENAL_MEASUREMENT_AUDIT_PK] PRIMARY KEY CLUSTERED ([CHAIN_ID], [ID])
+)
+GO
+
+-- NOTE: Oracle storage and tuning parameters removed
+--       Removed: PCTFREE, PCTUSED, INITRANS, MAXTRANS, TABLESPACE, BUFFER_POOL, FLASH_CACHE
+
+-- NOTE: Original table used Oracle LIST partitioning by CHAIN_ID
+--       Partitions removed (non-partitioned in Azure SQL)
+
+-- NOTE: Use Change Data Capture (CDC) or Change Tracking
+--       Removed: SUPPLEMENTAL LOG DATA (ALL) COLUMNS
+
+-- INDEX RECOMMENDATION:
+-- For large audit tables, consider:
+CREATE NONCLUSTERED INDEX [IX_RENAL_MEASUREMENT_AUDIT_CHAIN_TS]
+ON [EPS].[RENAL_MEASUREMENT_AUDIT] ([CHAIN_ID], [AUDIT_TIMESTAMP])
+GO
+
+-- =====================================================================

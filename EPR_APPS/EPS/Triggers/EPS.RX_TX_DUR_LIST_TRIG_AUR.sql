@@ -1,0 +1,104 @@
+-- TRIGGER: [EPS].[RX_TX_DUR_LIST_TRIG_AUR] - Oracle to Azure SQL conversion
+-- Converted: AFTER UPDATE trigger with set-based INSERT...SELECT
+
+IF OBJECT_ID('[EPS].[RX_TX_DUR_LIST_TRIG_AUR]', 'TR') IS NOT NULL
+    DROP TRIGGER [EPS].[RX_TX_DUR_LIST_TRIG_AUR];
+GO
+
+CREATE TRIGGER [EPS].[RX_TX_DUR_LIST_TRIG_AUR]
+ON [EPS].[RX_TX_DUR_LIST]
+AFTER UPDATE
+AS
+BEGIN
+    INSERT INTO [EPS].[RX_TX_DUR_LIST_AUDIT] (
+        [CHAIN_ID],
+        [ID],
+        [DUR_ID],
+        [TP],
+        [DUR_TYPE],
+        [DESCRIPTION],
+        [OVERRIDE],
+        [PHARMACIST_NAME],
+        [REASON_DESCRIPTION],
+        [SERVICE_CODE],
+        [RESULT_CODE],
+        [NOTES],
+        [APPLIES],
+        [LAST_UPDATED],
+        [ID_RX_TX],
+        [ID_AAL],
+        [OVERRIDE_DATE],
+        [PROGRAM_ID_NUMBER],
+        [PROGRAM_DESCRIPTION],
+        [INTERVENTION_RECORD],
+        [INTERVENTION_TYPE],
+        [INTERVENTION_LEVEL],
+        [CRITICALITY_TYPE],
+        [TITLE],
+        [DETAILED_DESCRIPTION],
+        [PATIENT_CONSULT_REQUIRED],
+        [COMPLETION_DATE],
+        [COMPLETION_PHARMACIST_NAME],
+        [DEACTIVATED_DATE],
+        [DOCUMENT_ID_NUMBER],
+        [DOCUMENT_NAME],
+        [INTERVENTION_NOTE],
+        [PROBLEM_CODE],
+        [ACTION_CODE],
+        [OLD_TX_NUMBER],
+        [OVERRRIDE_RULE_TEXT],
+        [CLINICAL_ALERT_TYPE],
+        [CLINICAL_ALERT_DETAIL],
+        [CLINICAL_ALERT_SIGNIFICANCE],
+        [PRESCRIBER_COMMENTS],
+        [DUR_SEVERITY_TYPE],
+        [ID_AUDIT],
+        [AUDIT_TIMESTAMP]
+    )
+    SELECT
+        [CHAIN_ID],
+        [ID],
+        [DUR_ID],
+        [TP],
+        [DUR_TYPE],
+        [DESCRIPTION],
+        [OVERRIDE],
+        [PHARMACIST_NAME],
+        [REASON_DESCRIPTION],
+        [SERVICE_CODE],
+        [RESULT_CODE],
+        [NOTES],
+        [APPLIES],
+        [LAST_UPDATED],
+        [ID_RX_TX],
+        [ID_AAL],
+        [OVERRIDE_DATE],
+        [PROGRAM_ID_NUMBER],
+        [PROGRAM_DESCRIPTION],
+        [INTERVENTION_RECORD],
+        [INTERVENTION_TYPE],
+        [INTERVENTION_LEVEL],
+        [CRITICALITY_TYPE],
+        [TITLE],
+        [DETAILED_DESCRIPTION],
+        [PATIENT_CONSULT_REQUIRED],
+        [COMPLETION_DATE],
+        [COMPLETION_PHARMACIST_NAME],
+        [DEACTIVATED_DATE],
+        [DOCUMENT_ID_NUMBER],
+        [DOCUMENT_NAME],
+        [INTERVENTION_NOTE],
+        [PROBLEM_CODE],
+        [ACTION_CODE],
+        [OLD_TX_NUMBER],
+        [OVERRRIDE_RULE_TEXT],
+        [CLINICAL_ALERT_TYPE],
+        [CLINICAL_ALERT_DETAIL],
+        [CLINICAL_ALERT_SIGNIFICANCE],
+        [PRESCRIBER_COMMENTS],
+        [DUR_SEVERITY_TYPE],
+        NEXT VALUE FOR [EPS].[RX_TX_DUR_LIST_SEQ],
+        SYSDATETIME()
+    FROM deleted;
+END;
+GO

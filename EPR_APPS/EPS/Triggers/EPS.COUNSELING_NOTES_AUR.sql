@@ -1,0 +1,31 @@
+-- TRIGGER: [EPS].[COUNSELING_NOTES_AUR] - Oracle to Azure SQL conversion
+-- Converted: AFTER UPDATE trigger with set-based INSERT...SELECT
+
+IF OBJECT_ID('[EPS].[COUNSELING_NOTES_AUR]', 'TR') IS NOT NULL
+    DROP TRIGGER [EPS].[COUNSELING_NOTES_AUR];
+GO
+
+CREATE TRIGGER [EPS].[COUNSELING_NOTES_AUR]
+ON [EPS].[COUNSELING_NOTES]
+AFTER UPDATE
+AS
+BEGIN
+    INSERT INTO [EPS].[COUNSELING_NOTES_AUDIT] (
+        [CHAIN_ID],
+        [ID],
+        [DELETED],
+        [LAST_UPDATED],
+        [ID_AAL],
+        [ID_AUDIT],
+        [AUDIT_TIMESTAMP]
+    )
+    SELECT
+        [CHAIN_ID],
+        [ID],
+        [DELETED],
+        [LAST_UPDATED],
+        [ID_AAL],
+        NEXT VALUE FOR [EPS].[AUDIT_SEQ], SYSDATETIME()
+    FROM deleted;
+END;
+GO

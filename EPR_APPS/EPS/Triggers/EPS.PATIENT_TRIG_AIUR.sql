@@ -1,0 +1,24 @@
+-- TRIGGER: [EPS].[PATIENT_TRIG_AIUR] - Oracle to Azure SQL conversion
+-- Converted: AFTER INSERT OR UPDATE trigger with set-based INSERT...SELECT
+
+IF OBJECT_ID('[EPS].[PATIENT_TRIG_AIUR]', 'TR') IS NOT NULL
+    DROP TRIGGER [EPS].[PATIENT_TRIG_AIUR];
+GO
+
+CREATE TRIGGER [EPS].[PATIENT_TRIG_AIUR]
+ON [EPS].[PATIENT]
+AFTER INSERT, UPDATE
+AS
+BEGIN
+    INSERT INTO [EPS].[PATIENT_EXTRACT] (
+        [CHAIN_ID],
+        [ID],
+        [LAST_CHANGE_TIME]
+    )
+    SELECT
+        [CHAIN_ID],
+        [ID],
+        SYSDATETIME()
+    FROM inserted;
+END;
+GO

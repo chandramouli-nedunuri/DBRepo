@@ -1,0 +1,26 @@
+-- TRIGGER: [EPS].[AUDIT_USER_LOG_TRIG_GETID] - Oracle to Azure SQL conversion
+-- Converted: BEFORE INSERT trigger that generates ID from sequence
+
+IF OBJECT_ID('[EPS].[AUDIT_USER_LOG_TRIG_GETID]', 'TR') IS NOT NULL
+    DROP TRIGGER [EPS].[AUDIT_USER_LOG_TRIG_GETID];
+GO
+
+CREATE TRIGGER [EPS].[AUDIT_USER_LOG_TRIG_GETID]
+ON [EPS].[AUDIT_USER_LOG]
+INSTEAD OF INSERT
+AS
+BEGIN
+    INSERT INTO [EPS].[AUDIT_USER_LOG] (
+        [ID],
+        [AUDIT_TIMESTAMP],
+        [AUDIT_USER],
+        [AUDIT_ACTION]
+    )
+    SELECT
+        NEXT VALUE FOR [EPS].[AUDIT_USER_LOG_SEQ],
+        GETDATE(),
+        [AUDIT_USER],
+        [AUDIT_ACTION]
+    FROM inserted;
+END;
+GO

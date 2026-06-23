@@ -1,0 +1,52 @@
+-- TRIGGER: [EPS].[PATIENT_AR_ACCOUNT_TRIG_AUR] - Oracle to Azure SQL conversion
+-- Converted: AFTER UPDATE trigger with set-based INSERT...SELECT
+
+IF OBJECT_ID('[EPS].[PATIENT_AR_ACCOUNT_TRIG_AUR]', 'TR') IS NOT NULL
+    DROP TRIGGER [EPS].[PATIENT_AR_ACCOUNT_TRIG_AUR];
+GO
+
+CREATE TRIGGER [EPS].[PATIENT_AR_ACCOUNT_TRIG_AUR]
+ON [EPS].[PATIENT_AR_ACCOUNT]
+AFTER UPDATE
+AS
+BEGIN
+    INSERT INTO [EPS].[PATIENT_AR_ACCOUNT_AUDIT] (
+        [CHAIN_ID],
+        [ID],
+        [ID_AAL],
+        [LAST_UPDATED],
+        [NHIN_ID],
+        [ACCOUNT_TYPE],
+        [ACCOUNT_NUMBER],
+        [MASTER_ACCOUNT_NUMBER],
+        [ACCOUNT_OPEN_DATE],
+        [ACCOUNT_CLOSE_DATE],
+        [ID_PATIENT],
+        [ORIGINATING_NHIN_STORE_ID],
+        [ORIGINAL_PATIENT_CODE],
+        [DELETED],
+        [NOTE],
+        [ID_AUDIT],
+        [AUDIT_TIMESTAMP]
+    )
+    SELECT
+        [CHAIN_ID],
+        [ID],
+        [ID_AAL],
+        [LAST_UPDATED],
+        [NHIN_ID],
+        [ACCOUNT_TYPE],
+        [ACCOUNT_NUMBER],
+        [MASTER_ACCOUNT_NUMBER],
+        [ACCOUNT_OPEN_DATE],
+        [ACCOUNT_CLOSE_DATE],
+        [ID_PATIENT],
+        [ORIGINATING_NHIN_STORE_ID],
+        [ORIGINAL_PATIENT_CODE],
+        [DELETED],
+        [NOTE],
+        NEXT VALUE FOR [EPS].[PATIENT_AR_ACCOUNT_SEQ],
+        SYSDATETIME()
+    FROM deleted;
+END;
+GO

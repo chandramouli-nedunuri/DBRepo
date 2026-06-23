@@ -1,0 +1,42 @@
+-- TRIGGER: [EPS].[PATIENT_NOTIFY_SCHEDULE_AUR] - Oracle to Azure SQL conversion
+-- Converted: AFTER UPDATE trigger with set-based INSERT...SELECT
+
+IF OBJECT_ID('[EPS].[PATIENT_NOTIFY_SCHEDULE_AUR]', 'TR') IS NOT NULL
+    DROP TRIGGER [EPS].[PATIENT_NOTIFY_SCHEDULE_AUR];
+GO
+
+CREATE TRIGGER [EPS].[PATIENT_NOTIFY_SCHEDULE_AUR]
+ON [EPS].[PATIENT_NOTIFY_SCHEDULE]
+AFTER UPDATE
+AS
+BEGIN
+    INSERT INTO [EPS].[PATIENT_NOTIFY_SCHEDULE_AUDIT] (
+        [CHAIN_ID],
+        [ID],
+        [ID_PATIENT],
+        [MESSAGE_TYPE],
+        [DAY_OF_WEEK],
+        [START_TIME],
+        [END_TIME],
+        [PATIENT_TIME_ZONE],
+        [LAST_UPDATED],
+        [ID_AAL],
+        [ID_AUDIT],
+        [AUDIT_TIMESTAMP]
+    )
+    SELECT
+        [CHAIN_ID],
+        [ID],
+        [ID_PATIENT],
+        [MESSAGE_TYPE],
+        [DAY_OF_WEEK],
+        [START_TIME],
+        [END_TIME],
+        [PATIENT_TIME_ZONE],
+        [LAST_UPDATED],
+        [ID_AAL],
+        NEXT VALUE FOR [EPS].[AUDIT_SEQ],
+        SYSDATETIME()
+    FROM deleted;
+END;
+GO

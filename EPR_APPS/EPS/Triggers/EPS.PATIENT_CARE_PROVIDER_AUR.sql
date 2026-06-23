@@ -1,0 +1,68 @@
+-- TRIGGER: [EPS].[PATIENT_CARE_PROVIDER_AUR] - Oracle to Azure SQL conversion
+-- Converted: AFTER UPDATE trigger with set-based INSERT...SELECT
+
+IF OBJECT_ID('[EPS].[PATIENT_CARE_PROVIDER_AUR]', 'TR') IS NOT NULL
+    DROP TRIGGER [EPS].[PATIENT_CARE_PROVIDER_AUR];
+GO
+
+CREATE TRIGGER [EPS].[PATIENT_CARE_PROVIDER_AUR]
+ON [EPS].[PATIENT_CARE_PROVIDER]
+AFTER UPDATE
+AS
+BEGIN
+    INSERT INTO [EPS].[PATIENT_CARE_PROVIDER_AUDIT] (
+        [CHAIN_ID],
+        [ID],
+        [ID_AAL],
+        [LAST_UPDATED],
+        [ID_PATIENT],
+        [PHYSICIAN_LAST_NAME],
+        [PHYSICIAN_FIRST_NAME],
+        [PHYSICIAN_NPI],
+        [RN_CONTACT_LAST_NAME],
+        [RN_CONTACT_FIRST_NAME],
+        [RN_AREA_CODE],
+        [RN_PHONE_NUMBER],
+        [RN_EMAIL_ADDRESS],
+        [CLINIC_IDENTIFIER],
+        [CLINIC_FAX_AREA_CODE],
+        [CLINIC_FAX_PHONE_NUMBER],
+        [PRIMARY],
+        [DELETED],
+        [PROVIDER_IDENTIFIER],
+        [DEA],
+        [STATE_IDENTIFIER],
+        [ADDRESS_LINE1],
+        [TYPE],
+        [ID_AUDIT],
+        [AUDIT_TIMESTAMP]
+    )
+    SELECT
+        [CHAIN_ID],
+        [ID],
+        [ID_AAL],
+        [LAST_UPDATED],
+        [ID_PATIENT],
+        [PHYSICIAN_LAST_NAME],
+        [PHYSICIAN_FIRST_NAME],
+        [PHYSICIAN_NPI],
+        [RN_CONTACT_LAST_NAME],
+        [RN_CONTACT_FIRST_NAME],
+        [RN_AREA_CODE],
+        [RN_PHONE_NUMBER],
+        [RN_EMAIL_ADDRESS],
+        [CLINIC_IDENTIFIER],
+        [CLINIC_FAX_AREA_CODE],
+        [CLINIC_FAX_PHONE_NUMBER],
+        [PRIMARY],
+        [DELETED],
+        [PROVIDER_IDENTIFIER],
+        [DEA],
+        [STATE_IDENTIFIER],
+        [ADDRESS_LINE1],
+        [TYPE],
+        NEXT VALUE FOR [EPS].[AUDIT_SEQ],
+        SYSDATETIME()
+    FROM deleted;
+END;
+GO

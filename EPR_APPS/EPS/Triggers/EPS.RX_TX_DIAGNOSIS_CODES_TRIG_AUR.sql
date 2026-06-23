@@ -1,0 +1,50 @@
+-- TRIGGER: [EPS].[RX_TX_DIAGNOSIS_CODES_TRIG_AUR] - Oracle to Azure SQL conversion
+-- Converted: AFTER UPDATE trigger with set-based INSERT...SELECT
+
+IF OBJECT_ID('[EPS].[RX_TX_DIAGNOSIS_CODES_TRIG_AUR]', 'TR') IS NOT NULL
+    DROP TRIGGER [EPS].[RX_TX_DIAGNOSIS_CODES_TRIG_AUR];
+GO
+
+CREATE TRIGGER [EPS].[RX_TX_DIAGNOSIS_CODES_TRIG_AUR]
+ON [EPS].[RX_TX_DIAGNOSIS_CODES]
+AFTER UPDATE
+AS
+BEGIN
+    INSERT INTO [EPS].[RX_TX_DIAGNOSIS_CODES_AUDIT] (
+        [CHAIN_ID],
+        [ID],
+        [ID_RX_TX],
+        [DIAGNOSIS_CODE],
+        [DIAGNOSIS_CODE_PREFIX],
+        [DIAGNOSIS_CODE_QUALIFIER],
+        [NHIN_ID],
+        [ID_AAL],
+        [DELETED],
+        [LAST_UPDATED],
+        [DIAGNOSIS_TEXT],
+        [DIAGNOSIS_CODE_SEQUENCE],
+        [UPDATED_BY],
+        [LAST_UPDATED_DATE],
+        [ID_AUDIT],
+        [AUDIT_TIMESTAMP]
+    )
+    SELECT
+        [CHAIN_ID],
+        [ID],
+        [ID_RX_TX],
+        [DIAGNOSIS_CODE],
+        [DIAGNOSIS_CODE_PREFIX],
+        [DIAGNOSIS_CODE_QUALIFIER],
+        [NHIN_ID],
+        [ID_AAL],
+        [DELETED],
+        [LAST_UPDATED],
+        [DIAGNOSIS_TEXT],
+        [DIAGNOSIS_CODE_SEQUENCE],
+        [UPDATED_BY],
+        [LAST_UPDATED_DATE],
+        NEXT VALUE FOR [EPS].[RX_TX_DIAGNOSIS_CODES_SEQ],
+        SYSDATETIME()
+    FROM deleted;
+END;
+GO

@@ -1,0 +1,20 @@
+-- TRIGGER: [EPS].[APED_TRIG_GETID] - Oracle to Azure SQL conversion
+-- Converted: BEFORE INSERT trigger with sequence generation
+
+IF OBJECT_ID('[EPS].[APED_TRIG_GETID]', 'TR') IS NOT NULL
+    DROP TRIGGER [EPS].[APED_TRIG_GETID];
+GO
+
+CREATE TRIGGER [EPS].[APED_TRIG_GETID]
+ON [EPS].[AUDIT_PHI_EVENT_DETAIL]
+INSTEAD OF INSERT
+AS
+BEGIN
+    INSERT INTO [EPS].[AUDIT_PHI_EVENT_DETAIL] (
+        [ID]
+    )
+    SELECT
+        NEXT VALUE FOR [EPS].[APE_SEQ]
+    FROM inserted;
+END;
+GO
