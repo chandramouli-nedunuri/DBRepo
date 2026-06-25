@@ -23,5 +23,5 @@ $credentials = @{
 # Export to encrypted file (DPAPI - tied to Windows user)
 $credentials | ConvertTo-Json | Out-File $ConfigPath -Force
 
-Write-Host "✓ Credentials encrypted and stored at: $ConfigPath" -ForegroundColor Green
-Write-Host "  (Encrypted with DPAPI - only accessible by current Windows user on this machine)"
+Write-Host "[SUCCESS] Credentials encrypted and stored at: $ConfigPath" -ForegroundColor Green
+Write-Host "  Encrypted with DPAPI - only accessible by current Windows user on this machine"

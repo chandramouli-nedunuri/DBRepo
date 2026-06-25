@@ -8,7 +8,7 @@ param(
 
 # Load encrypted credentials
 if (-not (Test-Path $ConfigPath)) {
-    Write-Host "✗ Credentials file not found at: $ConfigPath" -ForegroundColor Red
+    Write-Host "[ERROR] Credentials file not found at: $ConfigPath" -ForegroundColor Red
     Write-Host "  Run Encrypt-DBCredentials.ps1 first to create encrypted credentials"
     exit 1
 }
@@ -29,7 +29,7 @@ try {
     $connection.ConnectionString = $connectionString
     $connection.Open()
     
-    Write-Host "✓ Connected to Azure SQL successfully" -ForegroundColor Green
+    Write-Host "[SUCCESS] Connected to Azure SQL successfully" -ForegroundColor Green
     Write-Host "  Server: $serverName" -ForegroundColor Gray
     Write-Host "  Database: $databaseName" -ForegroundColor Gray
     
@@ -52,6 +52,6 @@ try {
     $connection.Close()
     
 } catch {
-    Write-Host "✗ Error: $_" -ForegroundColor Red
+    Write-Host "[ERROR] $($_)" -ForegroundColor Red
     exit 1
 }
