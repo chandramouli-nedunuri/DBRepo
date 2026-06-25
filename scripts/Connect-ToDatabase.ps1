@@ -19,7 +19,11 @@ try {
     $databaseName = $credentialsJson.DatabaseName
     $username = $credentialsJson.Username
     $securePassword = $credentialsJson.Password | ConvertTo-SecureString
-    $plainPassword = [System.Runtime.InteropServices.Marshal]::PtrToStringAuto([System.Runtime.InteropServices.Marshal]::SecureStringToCoTaskMemAlloc($securePassword))
+    
+    # Convert SecureString to plain text
+    $BSTR = [System.Runtime.InteropServices.Marshal]::SecureStringToBSTR($securePassword)
+    $plainPassword = [System.Runtime.InteropServices.Marshal]::PtrToStringAuto($BSTR)
+    [System.Runtime.InteropServices.Marshal]::ZeroFreeBSTR($BSTR)
     
     # Build connection string
     $connectionString = "Server=$serverName;Database=$databaseName;User Id=$username;Password=$plainPassword;Encrypt=true;TrustServerCertificate=false;"
