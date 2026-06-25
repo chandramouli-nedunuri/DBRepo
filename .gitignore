@@ -1,0 +1,22 @@
+# Credentials and sensitive files
+config/db-credentials.encrypted
+
+# Environment files
+.env
+.env.local
+
+# IDE and OS files
+.vscode/
+.DS_Store
+*.swp
+*.swo
+*~
+Thumbs.db
+
+# Node modules (if applicable)
+node_modules/
+
+# Build outputs
+dist/
+build/
+*.log
