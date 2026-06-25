@@ -1,0 +1,16 @@
+
+  CREATE OR REPLACE EDITIONABLE PROCEDURE "EPS"."SP_TEST" 
+as
+sql_str varchar2(4000);
+
+begin
+
+sql_str := 'begin eps.pk_rx_tx_purge.sp_parallel_delete(''RX_TX'',''TARGET'', :start_id, :end_id); end;';
+
+DBMS_PARALLEL_EXECUTE.DROP_TASK ('EPR-PURGE');
+DBMS_PARALLEL_EXECUTE.CREATE_TASK ('EPR-PURGE');
+DBMS_PARALLEL_EXECUTE.CREATE_CHUNKS_BY_ROWID('EPR-PURGE', 'EPS', 'PURGE_RECORDS', true, 50000);
+DBMS_PARALLEL_EXECUTE.RUN_TASK('EPR-PURGE', sql_str, DBMS_SQL.NATIVE, parallel_level => 5);
+
+--DBMS_PARALLEL_EXECUTE.RESUME_TASK ('EPR-PURGE');
+end;
