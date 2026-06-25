@@ -1,0 +1,815 @@
+INSERT INTO "SELECT
+    'ALTER TABLE ""' || c.owner || '"".""' || c.table_name || 
+    '"" ADD CONSTRAINT ""' || c.constraint_name || '"" FOREIGN KEY (' || cols.column_list || ') ' ||
+    'REFERENCES ""' || r.owner || '"".""' || r.table_name || '"" (' || r_cols.column_list || ') ' ||
+    CASE 
+        WHEN c.deferrable = 'DEFERRABLE' THEN 'DEFERRABLE '
+        ELSE ''
+    END ||
+    CASE 
+        WHEN c.deferred = 'DEFERRED' THEN 'INITIALLY DEFERRED '
+        ELSE ''
+    END ||
+    'ENABLE;' AS alter_statement
+FROM all_constraints c
+JOIN (
+    SELECT owner, constraint_name,
+           LISTAGG('""' || column_name || '""', ', ') 
+           WITHIN GROUP (ORDER BY position) AS column_list
+    FROM all_cons_columns
+    GROUP BY owner, constraint_name
+) cols
+    ON c.owner = cols.owner 
+   AND c.constraint_name = cols.constraint_name
+JOIN all_constraints r
+    ON c.r_owner = r.owner 
+   AND c.r_constraint_name = r.constraint_name
+JOIN (
+    SELECT owner, constraint_name,
+           LISTAGG('""' || column_name || '""', ', ') 
+           WITHIN GROUP (ORDER BY position) AS column_list
+    FROM all_cons_columns
+    GROUP BY owner, constraint_name
+) r_cols
+    ON r.owner = r_cols.owner 
+   AND r.constraint_name = r_cols.constraint_name
+WHERE c.constraint_type = 'R'   -- only FK
+  AND c.owner = 'EPS'           -- ✅ keep schema filter
+ORDER BY c.table_name, c.constraint_name" (ALTER_STATEMENT) VALUES
+	 ('ALTER TABLE "EPS"."ADDRESS" ADD CONSTRAINT "ADDRESS_FK_ESCHAIN" FOREIGN KEY ("CHAIN_ID") REFERENCES "SEC_ADMIN"."EPS_SEC_CHAIN" ("CHAIN_NHIN_ID") DEFERRABLE INITIALLY DEFERRED ENABLE;'),
+	 ('ALTER TABLE "EPS"."ADDRESS" ADD CONSTRAINT "ADDRESS_FK_ESSTORE" FOREIGN KEY ("CHAIN_ID", "NHIN_ID") REFERENCES "SEC_ADMIN"."EPS_SEC_STORE" ("CHAIN_NHIN_ID", "STORE_NHIN_ID") DEFERRABLE INITIALLY DEFERRED ENABLE;'),
+	 ('ALTER TABLE "EPS"."ADDRESS" ADD CONSTRAINT "ADDRESS_FK_PATIENT" FOREIGN KEY ("CHAIN_ID", "ID_PATIENT") REFERENCES "EPS"."PATIENT" ("CHAIN_ID", "ID") DEFERRABLE INITIALLY DEFERRED ENABLE;'),
+	 ('ALTER TABLE "EPS"."ADMIN_UNLOCK_LOG" ADD CONSTRAINT "ADMIN_UNLOCK_LOG_FK_ESCHAIN" FOREIGN KEY ("CHAIN_ID") REFERENCES "SEC_ADMIN"."EPS_SEC_CHAIN" ("CHAIN_NHIN_ID") DEFERRABLE INITIALLY DEFERRED ENABLE;'),
+	 ('ALTER TABLE "EPS"."ADMIN_UNLOCK_LOG" ADD CONSTRAINT "ADMIN_UNLOCK_LOG_FK_PATIENT" FOREIGN KEY ("CHAIN_ID", "ID_PATIENT") REFERENCES "EPS"."PATIENT" ("CHAIN_ID", "ID") DEFERRABLE INITIALLY DEFERRED ENABLE;'),
+	 ('ALTER TABLE "EPS"."ALLERGY" ADD CONSTRAINT "ALLERGY_FK_ESCHAIN" FOREIGN KEY ("CHAIN_ID") REFERENCES "SEC_ADMIN"."EPS_SEC_CHAIN" ("CHAIN_NHIN_ID") DEFERRABLE INITIALLY DEFERRED ENABLE;'),
+	 ('ALTER TABLE "EPS"."ALLERGY" ADD CONSTRAINT "ALLERGY_FK_ESSTORE" FOREIGN KEY ("CHAIN_ID", "NHIN_ID") REFERENCES "SEC_ADMIN"."EPS_SEC_STORE" ("CHAIN_NHIN_ID", "STORE_NHIN_ID") DEFERRABLE INITIALLY DEFERRED ENABLE;'),
+	 ('ALTER TABLE "EPS"."ALLERGY" ADD CONSTRAINT "ALLERGY_FK_PATIENT" FOREIGN KEY ("CHAIN_ID", "ID_PATIENT") REFERENCES "EPS"."PATIENT" ("CHAIN_ID", "ID") DEFERRABLE INITIALLY DEFERRED ENABLE;'),
+	 ('ALTER TABLE "EPS"."ALT_PRESCRIBER" ADD CONSTRAINT "ALT_PRESCRIBER_FK_ESCHAIN" FOREIGN KEY ("CHAIN_ID") REFERENCES "SEC_ADMIN"."EPS_SEC_CHAIN" ("CHAIN_NHIN_ID") DEFERRABLE INITIALLY DEFERRED ENABLE;'),
+	 ('ALTER TABLE "EPS"."ALT_PRESCRIBER" ADD CONSTRAINT "ALT_PRESCRIBER_FK_ESSTORE" FOREIGN KEY ("CHAIN_ID", "NHIN_ID") REFERENCES "SEC_ADMIN"."EPS_SEC_STORE" ("CHAIN_NHIN_ID", "STORE_NHIN_ID") DEFERRABLE INITIALLY DEFERRED ENABLE;');
+INSERT INTO "SELECT
+    'ALTER TABLE ""' || c.owner || '"".""' || c.table_name || 
+    '"" ADD CONSTRAINT ""' || c.constraint_name || '"" FOREIGN KEY (' || cols.column_list || ') ' ||
+    'REFERENCES ""' || r.owner || '"".""' || r.table_name || '"" (' || r_cols.column_list || ') ' ||
+    CASE 
+        WHEN c.deferrable = 'DEFERRABLE' THEN 'DEFERRABLE '
+        ELSE ''
+    END ||
+    CASE 
+        WHEN c.deferred = 'DEFERRED' THEN 'INITIALLY DEFERRED '
+        ELSE ''
+    END ||
+    'ENABLE;' AS alter_statement
+FROM all_constraints c
+JOIN (
+    SELECT owner, constraint_name,
+           LISTAGG('""' || column_name || '""', ', ') 
+           WITHIN GROUP (ORDER BY position) AS column_list
+    FROM all_cons_columns
+    GROUP BY owner, constraint_name
+) cols
+    ON c.owner = cols.owner 
+   AND c.constraint_name = cols.constraint_name
+JOIN all_constraints r
+    ON c.r_owner = r.owner 
+   AND c.r_constraint_name = r.constraint_name
+JOIN (
+    SELECT owner, constraint_name,
+           LISTAGG('""' || column_name || '""', ', ') 
+           WITHIN GROUP (ORDER BY position) AS column_list
+    FROM all_cons_columns
+    GROUP BY owner, constraint_name
+) r_cols
+    ON r.owner = r_cols.owner 
+   AND r.constraint_name = r_cols.constraint_name
+WHERE c.constraint_type = 'R'   -- only FK
+  AND c.owner = 'EPS'           -- ✅ keep schema filter
+ORDER BY c.table_name, c.constraint_name" (ALTER_STATEMENT) VALUES
+	 ('ALTER TABLE "EPS"."AUDIT_ACCESS_LOG" ADD CONSTRAINT "AAL_FK_ESCHAIN" FOREIGN KEY ("CHAIN_ID") REFERENCES "SEC_ADMIN"."EPS_SEC_CHAIN" ("CHAIN_NHIN_ID") ENABLE;'),
+	 ('ALTER TABLE "EPS"."AUDIT_MESSAGE_CONTENT" ADD CONSTRAINT "AMC_FK_ESCHAIN" FOREIGN KEY ("CHAIN_ID") REFERENCES "SEC_ADMIN"."EPS_SEC_CHAIN" ("CHAIN_NHIN_ID") ENABLE;'),
+	 ('ALTER TABLE "EPS"."AUDIT_PHI_EVENT_DETAIL" ADD CONSTRAINT "APED_FK_APE" FOREIGN KEY ("CHAIN_ID", "AUDIT_PHI_EVENT_ID") REFERENCES "EPS"."AUDIT_PHI_EVENT" ("CHAIN_ID", "ID") ENABLE;'),
+	 ('ALTER TABLE "EPS"."CARD" ADD CONSTRAINT "CARD_FK_ESCHAIN" FOREIGN KEY ("CHAIN_ID") REFERENCES "SEC_ADMIN"."EPS_SEC_CHAIN" ("CHAIN_NHIN_ID") DEFERRABLE INITIALLY DEFERRED ENABLE;'),
+	 ('ALTER TABLE "EPS"."CARD" ADD CONSTRAINT "CARD_FK_ESSTORE" FOREIGN KEY ("CHAIN_ID", "NHIN_ID") REFERENCES "SEC_ADMIN"."EPS_SEC_STORE" ("CHAIN_NHIN_ID", "STORE_NHIN_ID") DEFERRABLE INITIALLY DEFERRED ENABLE;'),
+	 ('ALTER TABLE "EPS"."CHAIN_RX_TX_SHARING_LINK" ADD CONSTRAINT "CHN_RXTX_SHRG_LINK_FK2_ESCHAIN" FOREIGN KEY ("LINKED_CHAIN_ID") REFERENCES "SEC_ADMIN"."EPS_SEC_CHAIN" ("CHAIN_NHIN_ID") ENABLE;'),
+	 ('ALTER TABLE "EPS"."CHAIN_RX_TX_SHARING_LINK" ADD CONSTRAINT "CHN_RXTX_SHRG_LINK_FK_ESCHAIN" FOREIGN KEY ("CHAIN_ID") REFERENCES "SEC_ADMIN"."EPS_SEC_CHAIN" ("CHAIN_NHIN_ID") ENABLE;'),
+	 ('ALTER TABLE "EPS"."COMPOUND_INGREDIENTS" ADD CONSTRAINT "COMPOUND_INGREDIENTS_FK1" FOREIGN KEY ("CHAIN_ID") REFERENCES "SEC_ADMIN"."EPS_SEC_CHAIN" ("CHAIN_NHIN_ID") ENABLE;'),
+	 ('ALTER TABLE "EPS"."COMPOUND_INGREDIENTS" ADD CONSTRAINT "COMPOUND_INGREDIENTS_FK2" FOREIGN KEY ("CHAIN_ID", "ID_RX_TX") REFERENCES "EPS"."RX_TX" ("CHAIN_ID", "ID") DEFERRABLE INITIALLY DEFERRED ENABLE;'),
+	 ('ALTER TABLE "EPS"."COMPOUND_INGREDIENT_LOT" ADD CONSTRAINT "COMPOUND_INGREDIENT_LOT_FK1" FOREIGN KEY ("CHAIN_ID") REFERENCES "SEC_ADMIN"."EPS_SEC_CHAIN" ("CHAIN_NHIN_ID") ENABLE;');
+INSERT INTO "SELECT
+    'ALTER TABLE ""' || c.owner || '"".""' || c.table_name || 
+    '"" ADD CONSTRAINT ""' || c.constraint_name || '"" FOREIGN KEY (' || cols.column_list || ') ' ||
+    'REFERENCES ""' || r.owner || '"".""' || r.table_name || '"" (' || r_cols.column_list || ') ' ||
+    CASE 
+        WHEN c.deferrable = 'DEFERRABLE' THEN 'DEFERRABLE '
+        ELSE ''
+    END ||
+    CASE 
+        WHEN c.deferred = 'DEFERRED' THEN 'INITIALLY DEFERRED '
+        ELSE ''
+    END ||
+    'ENABLE;' AS alter_statement
+FROM all_constraints c
+JOIN (
+    SELECT owner, constraint_name,
+           LISTAGG('""' || column_name || '""', ', ') 
+           WITHIN GROUP (ORDER BY position) AS column_list
+    FROM all_cons_columns
+    GROUP BY owner, constraint_name
+) cols
+    ON c.owner = cols.owner 
+   AND c.constraint_name = cols.constraint_name
+JOIN all_constraints r
+    ON c.r_owner = r.owner 
+   AND c.r_constraint_name = r.constraint_name
+JOIN (
+    SELECT owner, constraint_name,
+           LISTAGG('""' || column_name || '""', ', ') 
+           WITHIN GROUP (ORDER BY position) AS column_list
+    FROM all_cons_columns
+    GROUP BY owner, constraint_name
+) r_cols
+    ON r.owner = r_cols.owner 
+   AND r.constraint_name = r_cols.constraint_name
+WHERE c.constraint_type = 'R'   -- only FK
+  AND c.owner = 'EPS'           -- ✅ keep schema filter
+ORDER BY c.table_name, c.constraint_name" (ALTER_STATEMENT) VALUES
+	 ('ALTER TABLE "EPS"."COMPOUND_INGREDIENT_LOT" ADD CONSTRAINT "COMPOUND_INGREDIENT_LOT_FK2" FOREIGN KEY ("CHAIN_ID", "COMPOUND_INGREDIENT_ID") REFERENCES "EPS"."COMPOUND_INGREDIENTS" ("CHAIN_ID", "ID") ENABLE;'),
+	 ('ALTER TABLE "EPS"."COUNSELING_NOTES" ADD CONSTRAINT "COUNSELING_NOTES_FK1" FOREIGN KEY ("CHAIN_ID") REFERENCES "SEC_ADMIN"."EPS_SEC_CHAIN" ("CHAIN_NHIN_ID") ENABLE;'),
+	 ('ALTER TABLE "EPS"."COUNSELING_NOTES" ADD CONSTRAINT "COUNSELING_NOTES_FK2" FOREIGN KEY ("CHAIN_ID", "NHIN_ID") REFERENCES "SEC_ADMIN"."EPS_SEC_STORE" ("CHAIN_NHIN_ID", "STORE_NHIN_ID") ENABLE;'),
+	 ('ALTER TABLE "EPS"."CROSS_CHAIN_LAST_SELECTED" ADD CONSTRAINT "CCHN_LAST_SELECTED_FK_ESCHAIN" FOREIGN KEY ("CHAIN_ID") REFERENCES "SEC_ADMIN"."EPS_SEC_CHAIN" ("CHAIN_NHIN_ID") ENABLE;'),
+	 ('ALTER TABLE "EPS"."CROSS_CHAIN_LAST_SELECTED" ADD CONSTRAINT "CCHN_LAST_SELECTED_FK_ESSTORE" FOREIGN KEY ("CHAIN_ID", "NHIN_ID") REFERENCES "SEC_ADMIN"."EPS_SEC_STORE" ("CHAIN_NHIN_ID", "STORE_NHIN_ID") ENABLE;'),
+	 ('ALTER TABLE "EPS"."CROSS_CHAIN_LAST_SELECTED" ADD CONSTRAINT "CCHN_LAST_SELECTED_FK_PATIENT" FOREIGN KEY ("CHAIN_ID", "ID_PATIENT") REFERENCES "EPS"."PATIENT" ("CHAIN_ID", "ID") ENABLE;'),
+	 ('ALTER TABLE "EPS"."CROSS_CHAIN_LINK" ADD CONSTRAINT "CROSS_CHAIN_LINK_FK_ESCHAIN" FOREIGN KEY ("CHAIN_ID") REFERENCES "SEC_ADMIN"."EPS_SEC_CHAIN" ("CHAIN_NHIN_ID") DEFERRABLE INITIALLY DEFERRED ENABLE;'),
+	 ('ALTER TABLE "EPS"."CROSS_CHAIN_LINK" ADD CONSTRAINT "CROSS_CHAIN_LINK_FK_ESSTORE" FOREIGN KEY ("CHAIN_ID", "NHIN_ID") REFERENCES "SEC_ADMIN"."EPS_SEC_STORE" ("CHAIN_NHIN_ID", "STORE_NHIN_ID") DEFERRABLE INITIALLY DEFERRED ENABLE;'),
+	 ('ALTER TABLE "EPS"."CROSS_CHAIN_LINK" ADD CONSTRAINT "CROSS_CHAIN_LINK_FK_PATIENT" FOREIGN KEY ("CHAIN_ID", "ID_PATIENT") REFERENCES "EPS"."PATIENT" ("CHAIN_ID", "ID") DEFERRABLE INITIALLY DEFERRED ENABLE;'),
+	 ('ALTER TABLE "EPS"."DISEASE" ADD CONSTRAINT "DISEASE_FK_ESCHAIN" FOREIGN KEY ("CHAIN_ID") REFERENCES "SEC_ADMIN"."EPS_SEC_CHAIN" ("CHAIN_NHIN_ID") DEFERRABLE INITIALLY DEFERRED ENABLE;');
+INSERT INTO "SELECT
+    'ALTER TABLE ""' || c.owner || '"".""' || c.table_name || 
+    '"" ADD CONSTRAINT ""' || c.constraint_name || '"" FOREIGN KEY (' || cols.column_list || ') ' ||
+    'REFERENCES ""' || r.owner || '"".""' || r.table_name || '"" (' || r_cols.column_list || ') ' ||
+    CASE 
+        WHEN c.deferrable = 'DEFERRABLE' THEN 'DEFERRABLE '
+        ELSE ''
+    END ||
+    CASE 
+        WHEN c.deferred = 'DEFERRED' THEN 'INITIALLY DEFERRED '
+        ELSE ''
+    END ||
+    'ENABLE;' AS alter_statement
+FROM all_constraints c
+JOIN (
+    SELECT owner, constraint_name,
+           LISTAGG('""' || column_name || '""', ', ') 
+           WITHIN GROUP (ORDER BY position) AS column_list
+    FROM all_cons_columns
+    GROUP BY owner, constraint_name
+) cols
+    ON c.owner = cols.owner 
+   AND c.constraint_name = cols.constraint_name
+JOIN all_constraints r
+    ON c.r_owner = r.owner 
+   AND c.r_constraint_name = r.constraint_name
+JOIN (
+    SELECT owner, constraint_name,
+           LISTAGG('""' || column_name || '""', ', ') 
+           WITHIN GROUP (ORDER BY position) AS column_list
+    FROM all_cons_columns
+    GROUP BY owner, constraint_name
+) r_cols
+    ON r.owner = r_cols.owner 
+   AND r.constraint_name = r_cols.constraint_name
+WHERE c.constraint_type = 'R'   -- only FK
+  AND c.owner = 'EPS'           -- ✅ keep schema filter
+ORDER BY c.table_name, c.constraint_name" (ALTER_STATEMENT) VALUES
+	 ('ALTER TABLE "EPS"."DISEASE" ADD CONSTRAINT "DISEASE_FK_ESSTORE" FOREIGN KEY ("CHAIN_ID", "NHIN_ID") REFERENCES "SEC_ADMIN"."EPS_SEC_STORE" ("CHAIN_NHIN_ID", "STORE_NHIN_ID") DEFERRABLE INITIALLY DEFERRED ENABLE;'),
+	 ('ALTER TABLE "EPS"."DISEASE" ADD CONSTRAINT "DISEASE_FK_PATIENT" FOREIGN KEY ("CHAIN_ID", "ID_PATIENT") REFERENCES "EPS"."PATIENT" ("CHAIN_ID", "ID") DEFERRABLE INITIALLY DEFERRED ENABLE;'),
+	 ('ALTER TABLE "EPS"."EMAIL" ADD CONSTRAINT "EMAIL_FK_ESCHAIN" FOREIGN KEY ("CHAIN_ID") REFERENCES "SEC_ADMIN"."EPS_SEC_CHAIN" ("CHAIN_NHIN_ID") DEFERRABLE INITIALLY DEFERRED ENABLE;'),
+	 ('ALTER TABLE "EPS"."EMAIL" ADD CONSTRAINT "EMAIL_FK_ESSTORE" FOREIGN KEY ("CHAIN_ID", "NHIN_ID") REFERENCES "SEC_ADMIN"."EPS_SEC_STORE" ("CHAIN_NHIN_ID", "STORE_NHIN_ID") DEFERRABLE INITIALLY DEFERRED ENABLE;'),
+	 ('ALTER TABLE "EPS"."EMAIL" ADD CONSTRAINT "EMAIL_FK_PATIENT" FOREIGN KEY ("CHAIN_ID", "ID_PATIENT") REFERENCES "EPS"."PATIENT" ("CHAIN_ID", "ID") DEFERRABLE INITIALLY DEFERRED ENABLE;'),
+	 ('ALTER TABLE "EPS"."FDB_PATIENT_ALLERGY" ADD CONSTRAINT "FDB_PATIENT_ALLERGY_FK_ESCHAIN" FOREIGN KEY ("CHAIN_ID") REFERENCES "SEC_ADMIN"."EPS_SEC_CHAIN" ("CHAIN_NHIN_ID") DEFERRABLE INITIALLY DEFERRED ENABLE;'),
+	 ('ALTER TABLE "EPS"."FDB_PATIENT_ALLERGY" ADD CONSTRAINT "FDB_PATIENT_ALLERGY_FK_ESSTORE" FOREIGN KEY ("CHAIN_ID", "NHIN_ID") REFERENCES "SEC_ADMIN"."EPS_SEC_STORE" ("CHAIN_NHIN_ID", "STORE_NHIN_ID") DEFERRABLE INITIALLY DEFERRED ENABLE;'),
+	 ('ALTER TABLE "EPS"."FDB_PATIENT_ALLERGY" ADD CONSTRAINT "FDB_PAT_ALLERGY_FK_IDPATIENT" FOREIGN KEY ("CHAIN_ID", "ID_PATIENT") REFERENCES "EPS"."PATIENT" ("CHAIN_ID", "ID") DEFERRABLE INITIALLY DEFERRED ENABLE;'),
+	 ('ALTER TABLE "EPS"."FDB_PATIENT_ALLERGY_REACTION" ADD CONSTRAINT "FDB_PAT_ALL_REA_FK_ESCHAIN" FOREIGN KEY ("CHAIN_ID") REFERENCES "SEC_ADMIN"."EPS_SEC_CHAIN" ("CHAIN_NHIN_ID") DEFERRABLE INITIALLY DEFERRED ENABLE;'),
+	 ('ALTER TABLE "EPS"."FOLLOW_UP_PRESCRIBER" ADD CONSTRAINT "FOLLOW_UP_PRESCRIBER_FK1" FOREIGN KEY ("CHAIN_ID") REFERENCES "SEC_ADMIN"."EPS_SEC_CHAIN" ("CHAIN_NHIN_ID") ENABLE;');
+INSERT INTO "SELECT
+    'ALTER TABLE ""' || c.owner || '"".""' || c.table_name || 
+    '"" ADD CONSTRAINT ""' || c.constraint_name || '"" FOREIGN KEY (' || cols.column_list || ') ' ||
+    'REFERENCES ""' || r.owner || '"".""' || r.table_name || '"" (' || r_cols.column_list || ') ' ||
+    CASE 
+        WHEN c.deferrable = 'DEFERRABLE' THEN 'DEFERRABLE '
+        ELSE ''
+    END ||
+    CASE 
+        WHEN c.deferred = 'DEFERRED' THEN 'INITIALLY DEFERRED '
+        ELSE ''
+    END ||
+    'ENABLE;' AS alter_statement
+FROM all_constraints c
+JOIN (
+    SELECT owner, constraint_name,
+           LISTAGG('""' || column_name || '""', ', ') 
+           WITHIN GROUP (ORDER BY position) AS column_list
+    FROM all_cons_columns
+    GROUP BY owner, constraint_name
+) cols
+    ON c.owner = cols.owner 
+   AND c.constraint_name = cols.constraint_name
+JOIN all_constraints r
+    ON c.r_owner = r.owner 
+   AND c.r_constraint_name = r.constraint_name
+JOIN (
+    SELECT owner, constraint_name,
+           LISTAGG('""' || column_name || '""', ', ') 
+           WITHIN GROUP (ORDER BY position) AS column_list
+    FROM all_cons_columns
+    GROUP BY owner, constraint_name
+) r_cols
+    ON r.owner = r_cols.owner 
+   AND r.constraint_name = r_cols.constraint_name
+WHERE c.constraint_type = 'R'   -- only FK
+  AND c.owner = 'EPS'           -- ✅ keep schema filter
+ORDER BY c.table_name, c.constraint_name" (ALTER_STATEMENT) VALUES
+	 ('ALTER TABLE "EPS"."FOLLOW_UP_PRESCRIBER" ADD CONSTRAINT "FOLLOW_UP_PRESCRIBER_FK2" FOREIGN KEY ("CHAIN_ID", "NHIN_ID") REFERENCES "SEC_ADMIN"."EPS_SEC_STORE" ("CHAIN_NHIN_ID", "STORE_NHIN_ID") ENABLE;'),
+	 ('ALTER TABLE "EPS"."FREE_FORM_ALLERGY" ADD CONSTRAINT "FREE_FORM_ALLERGY_FK_ESCHAIN" FOREIGN KEY ("CHAIN_ID") REFERENCES "SEC_ADMIN"."EPS_SEC_CHAIN" ("CHAIN_NHIN_ID") DEFERRABLE INITIALLY DEFERRED ENABLE;'),
+	 ('ALTER TABLE "EPS"."FREE_FORM_ALLERGY" ADD CONSTRAINT "FREE_FORM_ALLERGY_FK_ESSTORE" FOREIGN KEY ("CHAIN_ID", "NHIN_ID") REFERENCES "SEC_ADMIN"."EPS_SEC_STORE" ("CHAIN_NHIN_ID", "STORE_NHIN_ID") DEFERRABLE INITIALLY DEFERRED ENABLE;'),
+	 ('ALTER TABLE "EPS"."FREE_FORM_ALLERGY" ADD CONSTRAINT "FREE_FORM_ALLERGY_FK_PATIENT" FOREIGN KEY ("CHAIN_ID", "ID_PATIENT") REFERENCES "EPS"."PATIENT" ("CHAIN_ID", "ID") DEFERRABLE INITIALLY DEFERRED ENABLE;'),
+	 ('ALTER TABLE "EPS"."IDGEN" ADD CONSTRAINT "IDGEN_FK_ESCHAIN" FOREIGN KEY ("CHAIN_ID") REFERENCES "SEC_ADMIN"."EPS_SEC_CHAIN" ("CHAIN_NHIN_ID") DEFERRABLE INITIALLY DEFERRED ENABLE;'),
+	 ('ALTER TABLE "EPS"."INTAKE_SOURCES" ADD CONSTRAINT "INTAKE_SOURCES_FK1" FOREIGN KEY ("CHAIN_ID") REFERENCES "SEC_ADMIN"."EPS_SEC_CHAIN" ("CHAIN_NHIN_ID") ENABLE;'),
+	 ('ALTER TABLE "EPS"."INTAKE_SOURCES" ADD CONSTRAINT "INTAKE_SOURCES_FK2" FOREIGN KEY ("CHAIN_ID", "ID_PATIENT") REFERENCES "EPS"."PATIENT" ("CHAIN_ID", "ID") ENABLE;'),
+	 ('ALTER TABLE "EPS"."KP_RXNUM_REF" ADD CONSTRAINT "KP_RXNUM_REF_FK_ESCHAIN" FOREIGN KEY ("CHAIN_ID") REFERENCES "SEC_ADMIN"."EPS_SEC_CHAIN" ("CHAIN_NHIN_ID") DEFERRABLE INITIALLY DEFERRED ENABLE;'),
+	 ('ALTER TABLE "EPS"."KP_RXNUM_REF" ADD CONSTRAINT "KP_RXNUM_REF_FK_ESSTORE" FOREIGN KEY ("CHAIN_ID", "ACTIVE_RX_NHIN_ID") REFERENCES "SEC_ADMIN"."EPS_SEC_STORE" ("CHAIN_NHIN_ID", "STORE_NHIN_ID") DEFERRABLE INITIALLY DEFERRED ENABLE;'),
+	 ('ALTER TABLE "EPS"."LINE_ITEM" ADD CONSTRAINT "LINE_ITEM_FK_ESCHAIN" FOREIGN KEY ("CHAIN_ID") REFERENCES "SEC_ADMIN"."EPS_SEC_CHAIN" ("CHAIN_NHIN_ID") DEFERRABLE INITIALLY DEFERRED ENABLE;');
+INSERT INTO "SELECT
+    'ALTER TABLE ""' || c.owner || '"".""' || c.table_name || 
+    '"" ADD CONSTRAINT ""' || c.constraint_name || '"" FOREIGN KEY (' || cols.column_list || ') ' ||
+    'REFERENCES ""' || r.owner || '"".""' || r.table_name || '"" (' || r_cols.column_list || ') ' ||
+    CASE 
+        WHEN c.deferrable = 'DEFERRABLE' THEN 'DEFERRABLE '
+        ELSE ''
+    END ||
+    CASE 
+        WHEN c.deferred = 'DEFERRED' THEN 'INITIALLY DEFERRED '
+        ELSE ''
+    END ||
+    'ENABLE;' AS alter_statement
+FROM all_constraints c
+JOIN (
+    SELECT owner, constraint_name,
+           LISTAGG('""' || column_name || '""', ', ') 
+           WITHIN GROUP (ORDER BY position) AS column_list
+    FROM all_cons_columns
+    GROUP BY owner, constraint_name
+) cols
+    ON c.owner = cols.owner 
+   AND c.constraint_name = cols.constraint_name
+JOIN all_constraints r
+    ON c.r_owner = r.owner 
+   AND c.r_constraint_name = r.constraint_name
+JOIN (
+    SELECT owner, constraint_name,
+           LISTAGG('""' || column_name || '""', ', ') 
+           WITHIN GROUP (ORDER BY position) AS column_list
+    FROM all_cons_columns
+    GROUP BY owner, constraint_name
+) r_cols
+    ON r.owner = r_cols.owner 
+   AND r.constraint_name = r_cols.constraint_name
+WHERE c.constraint_type = 'R'   -- only FK
+  AND c.owner = 'EPS'           -- ✅ keep schema filter
+ORDER BY c.table_name, c.constraint_name" (ALTER_STATEMENT) VALUES
+	 ('ALTER TABLE "EPS"."LINE_ITEM" ADD CONSTRAINT "LINE_ITEM_FK_ESSTORE" FOREIGN KEY ("CHAIN_ID", "NHIN_ID") REFERENCES "SEC_ADMIN"."EPS_SEC_STORE" ("CHAIN_NHIN_ID", "STORE_NHIN_ID") DEFERRABLE INITIALLY DEFERRED ENABLE;'),
+	 ('ALTER TABLE "EPS"."LINE_ITEM" ADD CONSTRAINT "LINE_ITEM_FK_PATIENT" FOREIGN KEY ("CHAIN_ID", "ID_PATIENT") REFERENCES "EPS"."PATIENT" ("CHAIN_ID", "ID") DEFERRABLE INITIALLY DEFERRED ENABLE;'),
+	 ('ALTER TABLE "EPS"."LINK_TOKENS" ADD CONSTRAINT "LINK_TOKENS_FK_ESCHAIN" FOREIGN KEY ("CHAIN_ID") REFERENCES "SEC_ADMIN"."EPS_SEC_CHAIN" ("CHAIN_NHIN_ID") DEFERRABLE INITIALLY DEFERRED ENABLE;'),
+	 ('ALTER TABLE "EPS"."LINK_TOKENS" ADD CONSTRAINT "LINK_TOKENS_FK_ROOTID" FOREIGN KEY ("CHAIN_ID", "ROOT_ID") REFERENCES "EPS"."PATIENT" ("CHAIN_ID", "ID") DEFERRABLE INITIALLY DEFERRED ENABLE;'),
+	 ('ALTER TABLE "EPS"."MATCH_KEY" ADD CONSTRAINT "MATCH_KEY_FK_ESCHAIN" FOREIGN KEY ("CHAIN_ID") REFERENCES "SEC_ADMIN"."EPS_SEC_CHAIN" ("CHAIN_NHIN_ID") DEFERRABLE INITIALLY DEFERRED ENABLE;'),
+	 ('ALTER TABLE "EPS"."MATCH_KEY" ADD CONSTRAINT "MATCH_KEY_FK_PATIENT" FOREIGN KEY ("CHAIN_ID", "ID_PATIENT") REFERENCES "EPS"."PATIENT" ("CHAIN_ID", "ID") DEFERRABLE INITIALLY DEFERRED ENABLE;'),
+	 ('ALTER TABLE "EPS"."MEDICAL_CONDITION" ADD CONSTRAINT "MEDICAL_CONDITION_FK1" FOREIGN KEY ("CHAIN_ID") REFERENCES "SEC_ADMIN"."EPS_SEC_CHAIN" ("CHAIN_NHIN_ID") ENABLE;'),
+	 ('ALTER TABLE "EPS"."MEDICAL_CONDITION" ADD CONSTRAINT "MEDICAL_CONDITION_FK2" FOREIGN KEY ("CHAIN_ID", "ID_PATIENT") REFERENCES "EPS"."PATIENT" ("CHAIN_ID", "ID") DEFERRABLE INITIALLY DEFERRED ENABLE;'),
+	 ('ALTER TABLE "EPS"."MOD_PCM" ADD CONSTRAINT "MOD_PCM_FK_ESCHAIN" FOREIGN KEY ("CHAIN_ID") REFERENCES "SEC_ADMIN"."EPS_SEC_CHAIN" ("CHAIN_NHIN_ID") DEFERRABLE INITIALLY DEFERRED ENABLE;'),
+	 ('ALTER TABLE "EPS"."MOD_PCM" ADD CONSTRAINT "MOD_PCM_FK_ESSTORE" FOREIGN KEY ("CHAIN_ID", "NHIN_ID") REFERENCES "SEC_ADMIN"."EPS_SEC_STORE" ("CHAIN_NHIN_ID", "STORE_NHIN_ID") DEFERRABLE INITIALLY DEFERRED ENABLE;');
+INSERT INTO "SELECT
+    'ALTER TABLE ""' || c.owner || '"".""' || c.table_name || 
+    '"" ADD CONSTRAINT ""' || c.constraint_name || '"" FOREIGN KEY (' || cols.column_list || ') ' ||
+    'REFERENCES ""' || r.owner || '"".""' || r.table_name || '"" (' || r_cols.column_list || ') ' ||
+    CASE 
+        WHEN c.deferrable = 'DEFERRABLE' THEN 'DEFERRABLE '
+        ELSE ''
+    END ||
+    CASE 
+        WHEN c.deferred = 'DEFERRED' THEN 'INITIALLY DEFERRED '
+        ELSE ''
+    END ||
+    'ENABLE;' AS alter_statement
+FROM all_constraints c
+JOIN (
+    SELECT owner, constraint_name,
+           LISTAGG('""' || column_name || '""', ', ') 
+           WITHIN GROUP (ORDER BY position) AS column_list
+    FROM all_cons_columns
+    GROUP BY owner, constraint_name
+) cols
+    ON c.owner = cols.owner 
+   AND c.constraint_name = cols.constraint_name
+JOIN all_constraints r
+    ON c.r_owner = r.owner 
+   AND c.r_constraint_name = r.constraint_name
+JOIN (
+    SELECT owner, constraint_name,
+           LISTAGG('""' || column_name || '""', ', ') 
+           WITHIN GROUP (ORDER BY position) AS column_list
+    FROM all_cons_columns
+    GROUP BY owner, constraint_name
+) r_cols
+    ON r.owner = r_cols.owner 
+   AND r.constraint_name = r_cols.constraint_name
+WHERE c.constraint_type = 'R'   -- only FK
+  AND c.owner = 'EPS'           -- ✅ keep schema filter
+ORDER BY c.table_name, c.constraint_name" (ALTER_STATEMENT) VALUES
+	 ('ALTER TABLE "EPS"."MRN" ADD CONSTRAINT "MRN_FK_ESCHAIN" FOREIGN KEY ("CHAIN_ID") REFERENCES "SEC_ADMIN"."EPS_SEC_CHAIN" ("CHAIN_NHIN_ID") DEFERRABLE ENABLE;'),
+	 ('ALTER TABLE "EPS"."MRN" ADD CONSTRAINT "MRN_FK_PATIENT" FOREIGN KEY ("CHAIN_ID", "ID_PATIENT") REFERENCES "EPS"."PATIENT" ("CHAIN_ID", "ID") DEFERRABLE ENABLE;'),
+	 ('ALTER TABLE "EPS"."MRN" ADD CONSTRAINT "MRN_FK_ROOTID" FOREIGN KEY ("CHAIN_ID", "ROOT_ID") REFERENCES "EPS"."PATIENT" ("CHAIN_ID", "ID") ENABLE;'),
+	 ('ALTER TABLE "EPS"."MTM_PATIENT_ANSWERS" ADD CONSTRAINT "MTM_PATIENT_ANSWERS_FK_ESCHAIN" FOREIGN KEY ("CHAIN_ID") REFERENCES "SEC_ADMIN"."EPS_SEC_CHAIN" ("CHAIN_NHIN_ID") DEFERRABLE INITIALLY DEFERRED ENABLE;'),
+	 ('ALTER TABLE "EPS"."MTM_PATIENT_ANSWERS" ADD CONSTRAINT "MTM_PATIENT_ANSWERS_FK_SESS" FOREIGN KEY ("CHAIN_ID", "ID_MTM_PATIENT_SESSION") REFERENCES "EPS"."MTM_PATIENT_SESSION" ("CHAIN_ID", "ID") DEFERRABLE INITIALLY DEFERRED ENABLE;'),
+	 ('ALTER TABLE "EPS"."MTM_PATIENT_ELIGIBILITY" ADD CONSTRAINT "MTM_PATIENT_ELIGIBILITY_FK1" FOREIGN KEY ("CHAIN_ID") REFERENCES "SEC_ADMIN"."EPS_SEC_CHAIN" ("CHAIN_NHIN_ID") ENABLE;'),
+	 ('ALTER TABLE "EPS"."MTM_PATIENT_SESSION" ADD CONSTRAINT "MTM_PATIENT_SESSION_FK_ESCHAIN" FOREIGN KEY ("CHAIN_ID") REFERENCES "SEC_ADMIN"."EPS_SEC_CHAIN" ("CHAIN_NHIN_ID") DEFERRABLE INITIALLY DEFERRED ENABLE;'),
+	 ('ALTER TABLE "EPS"."MTM_PATIENT_SESSION" ADD CONSTRAINT "MTM_PATIENT_SESSION_FK_SIGN" FOREIGN KEY ("CHAIN_ID", "ID_SIGNATURE") REFERENCES "EPS"."SIGNATURE" ("CHAIN_ID", "ID") DEFERRABLE INITIALLY DEFERRED ENABLE;'),
+	 ('ALTER TABLE "EPS"."PACKAGE_INFO" ADD CONSTRAINT "PACKAGE_INFO_FK_ESCHAIN" FOREIGN KEY ("CHAIN_ID") REFERENCES "SEC_ADMIN"."EPS_SEC_CHAIN" ("CHAIN_NHIN_ID") DEFERRABLE INITIALLY DEFERRED ENABLE;'),
+	 ('ALTER TABLE "EPS"."PACKAGE_INFO" ADD CONSTRAINT "PACKAGE_INFO_FK_RX_TX" FOREIGN KEY ("CHAIN_ID", "ID_RX_TX") REFERENCES "EPS"."RX_TX" ("CHAIN_ID", "ID") DEFERRABLE INITIALLY DEFERRED ENABLE;');
+INSERT INTO "SELECT
+    'ALTER TABLE ""' || c.owner || '"".""' || c.table_name || 
+    '"" ADD CONSTRAINT ""' || c.constraint_name || '"" FOREIGN KEY (' || cols.column_list || ') ' ||
+    'REFERENCES ""' || r.owner || '"".""' || r.table_name || '"" (' || r_cols.column_list || ') ' ||
+    CASE 
+        WHEN c.deferrable = 'DEFERRABLE' THEN 'DEFERRABLE '
+        ELSE ''
+    END ||
+    CASE 
+        WHEN c.deferred = 'DEFERRED' THEN 'INITIALLY DEFERRED '
+        ELSE ''
+    END ||
+    'ENABLE;' AS alter_statement
+FROM all_constraints c
+JOIN (
+    SELECT owner, constraint_name,
+           LISTAGG('""' || column_name || '""', ', ') 
+           WITHIN GROUP (ORDER BY position) AS column_list
+    FROM all_cons_columns
+    GROUP BY owner, constraint_name
+) cols
+    ON c.owner = cols.owner 
+   AND c.constraint_name = cols.constraint_name
+JOIN all_constraints r
+    ON c.r_owner = r.owner 
+   AND c.r_constraint_name = r.constraint_name
+JOIN (
+    SELECT owner, constraint_name,
+           LISTAGG('""' || column_name || '""', ', ') 
+           WITHIN GROUP (ORDER BY position) AS column_list
+    FROM all_cons_columns
+    GROUP BY owner, constraint_name
+) r_cols
+    ON r.owner = r_cols.owner 
+   AND r.constraint_name = r_cols.constraint_name
+WHERE c.constraint_type = 'R'   -- only FK
+  AND c.owner = 'EPS'           -- ✅ keep schema filter
+ORDER BY c.table_name, c.constraint_name" (ALTER_STATEMENT) VALUES
+	 ('ALTER TABLE "EPS"."PATIENT" ADD CONSTRAINT "PATIENT_FK1" FOREIGN KEY ("CHAIN_ID", "RESPONSIBLE_PARTY_RXCOM_ID") REFERENCES "EPS"."PATIENT" ("CHAIN_ID", "ID") ENABLE;'),
+	 ('ALTER TABLE "EPS"."PATIENT" ADD CONSTRAINT "PATIENT_FK_ESCHAIN" FOREIGN KEY ("CHAIN_ID") REFERENCES "SEC_ADMIN"."EPS_SEC_CHAIN" ("CHAIN_NHIN_ID") DEFERRABLE INITIALLY DEFERRED ENABLE;'),
+	 ('ALTER TABLE "EPS"."PATIENT" ADD CONSTRAINT "PATIENT_FK_ESSTORE" FOREIGN KEY ("CHAIN_ID", "NHIN_ID") REFERENCES "SEC_ADMIN"."EPS_SEC_STORE" ("CHAIN_NHIN_ID", "STORE_NHIN_ID") DEFERRABLE INITIALLY DEFERRED ENABLE;'),
+	 ('ALTER TABLE "EPS"."PATIENT_AR_ACCOUNT" ADD CONSTRAINT "PATIENT_AR_AC_FK_ESCHAIN" FOREIGN KEY ("CHAIN_ID") REFERENCES "SEC_ADMIN"."EPS_SEC_CHAIN" ("CHAIN_NHIN_ID") DEFERRABLE INITIALLY DEFERRED ENABLE;'),
+	 ('ALTER TABLE "EPS"."PATIENT_AR_ACCOUNT" ADD CONSTRAINT "PATIENT_AR_AC_FK_ESSTORE" FOREIGN KEY ("CHAIN_ID", "NHIN_ID") REFERENCES "SEC_ADMIN"."EPS_SEC_STORE" ("CHAIN_NHIN_ID", "STORE_NHIN_ID") DEFERRABLE INITIALLY DEFERRED ENABLE;'),
+	 ('ALTER TABLE "EPS"."PATIENT_AR_ACCOUNT" ADD CONSTRAINT "PATIENT_AR_AC_FK_PATIENT" FOREIGN KEY ("CHAIN_ID", "ID_PATIENT") REFERENCES "EPS"."PATIENT" ("CHAIN_ID", "ID") DEFERRABLE INITIALLY DEFERRED ENABLE;'),
+	 ('ALTER TABLE "EPS"."PATIENT_CARE_PROVIDER" ADD CONSTRAINT "PATIENT_CARE_PROVIDER_FK1" FOREIGN KEY ("CHAIN_ID") REFERENCES "SEC_ADMIN"."EPS_SEC_CHAIN" ("CHAIN_NHIN_ID") ENABLE;'),
+	 ('ALTER TABLE "EPS"."PATIENT_CARE_PROVIDER" ADD CONSTRAINT "PATIENT_CARE_PROVIDER_FK2" FOREIGN KEY ("CHAIN_ID", "ID_PATIENT") REFERENCES "EPS"."PATIENT" ("CHAIN_ID", "ID") ENABLE;'),
+	 ('ALTER TABLE "EPS"."PATIENT_CREDIT_CARD" ADD CONSTRAINT "PATIENT_CC_FK_ESCHAIN" FOREIGN KEY ("CHAIN_ID") REFERENCES "SEC_ADMIN"."EPS_SEC_CHAIN" ("CHAIN_NHIN_ID") DEFERRABLE INITIALLY DEFERRED ENABLE;'),
+	 ('ALTER TABLE "EPS"."PATIENT_CREDIT_CARD" ADD CONSTRAINT "PATIENT_CC_FK_PATIENT" FOREIGN KEY ("CHAIN_ID", "ID_PATIENT") REFERENCES "EPS"."PATIENT" ("CHAIN_ID", "ID") DEFERRABLE INITIALLY DEFERRED ENABLE;');
+INSERT INTO "SELECT
+    'ALTER TABLE ""' || c.owner || '"".""' || c.table_name || 
+    '"" ADD CONSTRAINT ""' || c.constraint_name || '"" FOREIGN KEY (' || cols.column_list || ') ' ||
+    'REFERENCES ""' || r.owner || '"".""' || r.table_name || '"" (' || r_cols.column_list || ') ' ||
+    CASE 
+        WHEN c.deferrable = 'DEFERRABLE' THEN 'DEFERRABLE '
+        ELSE ''
+    END ||
+    CASE 
+        WHEN c.deferred = 'DEFERRED' THEN 'INITIALLY DEFERRED '
+        ELSE ''
+    END ||
+    'ENABLE;' AS alter_statement
+FROM all_constraints c
+JOIN (
+    SELECT owner, constraint_name,
+           LISTAGG('""' || column_name || '""', ', ') 
+           WITHIN GROUP (ORDER BY position) AS column_list
+    FROM all_cons_columns
+    GROUP BY owner, constraint_name
+) cols
+    ON c.owner = cols.owner 
+   AND c.constraint_name = cols.constraint_name
+JOIN all_constraints r
+    ON c.r_owner = r.owner 
+   AND c.r_constraint_name = r.constraint_name
+JOIN (
+    SELECT owner, constraint_name,
+           LISTAGG('""' || column_name || '""', ', ') 
+           WITHIN GROUP (ORDER BY position) AS column_list
+    FROM all_cons_columns
+    GROUP BY owner, constraint_name
+) r_cols
+    ON r.owner = r_cols.owner 
+   AND r.constraint_name = r_cols.constraint_name
+WHERE c.constraint_type = 'R'   -- only FK
+  AND c.owner = 'EPS'           -- ✅ keep schema filter
+ORDER BY c.table_name, c.constraint_name" (ALTER_STATEMENT) VALUES
+	 ('ALTER TABLE "EPS"."PATIENT_DOCUMENT" ADD CONSTRAINT "PATIENT_DOCUMENT_FK1" FOREIGN KEY ("CHAIN_ID") REFERENCES "SEC_ADMIN"."EPS_SEC_CHAIN" ("CHAIN_NHIN_ID") ENABLE;'),
+	 ('ALTER TABLE "EPS"."PATIENT_DOCUMENT" ADD CONSTRAINT "PATIENT_DOCUMENT_FK2" FOREIGN KEY ("CHAIN_ID", "NHIN_ID") REFERENCES "SEC_ADMIN"."EPS_SEC_STORE" ("CHAIN_NHIN_ID", "STORE_NHIN_ID") ENABLE;'),
+	 ('ALTER TABLE "EPS"."PATIENT_DOCUMENT" ADD CONSTRAINT "PATIENT_DOCUMENT_FK3" FOREIGN KEY ("CHAIN_ID", "ID_PATIENT") REFERENCES "EPS"."PATIENT" ("CHAIN_ID", "ID") ENABLE;'),
+	 ('ALTER TABLE "EPS"."PATIENT_EMERGENCY_CONTACT" ADD CONSTRAINT "PATIENT_EMERGENCY_CONTACT_FK1" FOREIGN KEY ("CHAIN_ID", "ID_PATIENT") REFERENCES "EPS"."PATIENT" ("CHAIN_ID", "ID") ENABLE;'),
+	 ('ALTER TABLE "EPS"."PATIENT_EMERGENCY_CONTACT" ADD CONSTRAINT "PATIENT_EMERGENCY_CONTACT_FK2" FOREIGN KEY ("CHAIN_ID") REFERENCES "SEC_ADMIN"."EPS_SEC_CHAIN" ("CHAIN_NHIN_ID") ENABLE;'),
+	 ('ALTER TABLE "EPS"."PATIENT_MO_CONSENT" ADD CONSTRAINT "PATIENT_MO_CONSENT_FK1" FOREIGN KEY ("CHAIN_ID", "ID_PATIENT") REFERENCES "EPS"."PATIENT" ("CHAIN_ID", "ID") ENABLE;'),
+	 ('ALTER TABLE "EPS"."PATIENT_MO_CONSENT" ADD CONSTRAINT "PATIENT_MO_CONSENT_FK2" FOREIGN KEY ("CHAIN_ID") REFERENCES "SEC_ADMIN"."EPS_SEC_CHAIN" ("CHAIN_NHIN_ID") ENABLE;'),
+	 ('ALTER TABLE "EPS"."PATIENT_NOTES" ADD CONSTRAINT "PATIENT_NOTES_FK1" FOREIGN KEY ("CHAIN_ID") REFERENCES "SEC_ADMIN"."EPS_SEC_CHAIN" ("CHAIN_NHIN_ID") ENABLE;'),
+	 ('ALTER TABLE "EPS"."PATIENT_NOTES" ADD CONSTRAINT "PATIENT_NOTES_FK2" FOREIGN KEY ("CHAIN_ID", "ID_PATIENT") REFERENCES "EPS"."PATIENT" ("CHAIN_ID", "ID") ENABLE;'),
+	 ('ALTER TABLE "EPS"."PATIENT_NOTIFY_SCHEDULE" ADD CONSTRAINT "PATIENT_NOTIFY_SCHEDULE_FK1" FOREIGN KEY ("CHAIN_ID") REFERENCES "SEC_ADMIN"."EPS_SEC_CHAIN" ("CHAIN_NHIN_ID") ENABLE;');
+INSERT INTO "SELECT
+    'ALTER TABLE ""' || c.owner || '"".""' || c.table_name || 
+    '"" ADD CONSTRAINT ""' || c.constraint_name || '"" FOREIGN KEY (' || cols.column_list || ') ' ||
+    'REFERENCES ""' || r.owner || '"".""' || r.table_name || '"" (' || r_cols.column_list || ') ' ||
+    CASE 
+        WHEN c.deferrable = 'DEFERRABLE' THEN 'DEFERRABLE '
+        ELSE ''
+    END ||
+    CASE 
+        WHEN c.deferred = 'DEFERRED' THEN 'INITIALLY DEFERRED '
+        ELSE ''
+    END ||
+    'ENABLE;' AS alter_statement
+FROM all_constraints c
+JOIN (
+    SELECT owner, constraint_name,
+           LISTAGG('""' || column_name || '""', ', ') 
+           WITHIN GROUP (ORDER BY position) AS column_list
+    FROM all_cons_columns
+    GROUP BY owner, constraint_name
+) cols
+    ON c.owner = cols.owner 
+   AND c.constraint_name = cols.constraint_name
+JOIN all_constraints r
+    ON c.r_owner = r.owner 
+   AND c.r_constraint_name = r.constraint_name
+JOIN (
+    SELECT owner, constraint_name,
+           LISTAGG('""' || column_name || '""', ', ') 
+           WITHIN GROUP (ORDER BY position) AS column_list
+    FROM all_cons_columns
+    GROUP BY owner, constraint_name
+) r_cols
+    ON r.owner = r_cols.owner 
+   AND r.constraint_name = r_cols.constraint_name
+WHERE c.constraint_type = 'R'   -- only FK
+  AND c.owner = 'EPS'           -- ✅ keep schema filter
+ORDER BY c.table_name, c.constraint_name" (ALTER_STATEMENT) VALUES
+	 ('ALTER TABLE "EPS"."PATIENT_NOTIFY_SCHEDULE" ADD CONSTRAINT "PATIENT_NOTIFY_SCHEDULE_FK2" FOREIGN KEY ("CHAIN_ID", "ID_PATIENT") REFERENCES "EPS"."PATIENT" ("CHAIN_ID", "ID") ENABLE;'),
+	 ('ALTER TABLE "EPS"."PATIENT_PROGRAM" ADD CONSTRAINT "PATIENT_PROGRAM_FK1" FOREIGN KEY ("CHAIN_ID", "ID_PATIENT") REFERENCES "EPS"."PATIENT" ("CHAIN_ID", "ID") ENABLE;'),
+	 ('ALTER TABLE "EPS"."PATIENT_PROGRAM_CONTACT" ADD CONSTRAINT "PATIENT_PROGRAM_CONTACT_FK1" FOREIGN KEY ("CHAIN_ID", "PATIENT_PROGRAM_ID") REFERENCES "EPS"."PATIENT_PROGRAM" ("CHAIN_ID", "ID") ENABLE;'),
+	 ('ALTER TABLE "EPS"."PATIENT_SIGNATURES" ADD CONSTRAINT "PATIENT_SIGNATURES_FK1" FOREIGN KEY ("CHAIN_ID", "ID_PATIENT") REFERENCES "EPS"."PATIENT" ("CHAIN_ID", "ID") ENABLE;'),
+	 ('ALTER TABLE "EPS"."PATIENT_SIGNATURES" ADD CONSTRAINT "PATIENT_SIGNATURES_FK2" FOREIGN KEY ("CHAIN_ID") REFERENCES "SEC_ADMIN"."EPS_SEC_CHAIN" ("CHAIN_NHIN_ID") ENABLE;'),
+	 ('ALTER TABLE "EPS"."PATIENT_SIGNATURES" ADD CONSTRAINT "PATIENT_SIGNATURES_FK3" FOREIGN KEY ("CHAIN_ID", "NHIN_ID") REFERENCES "SEC_ADMIN"."EPS_SEC_STORE" ("CHAIN_NHIN_ID", "STORE_NHIN_ID") ENABLE;'),
+	 ('ALTER TABLE "EPS"."PATIENT_SIGNATURES" ADD CONSTRAINT "PATIENT_SIGNATURES_FK4" FOREIGN KEY ("CHAIN_ID", "ACQUIRED_AT_STORE_NHIN_ID") REFERENCES "SEC_ADMIN"."EPS_SEC_STORE" ("CHAIN_NHIN_ID", "STORE_NHIN_ID") ENABLE;'),
+	 ('ALTER TABLE "EPS"."PATIENT_SIGNATURES" ADD CONSTRAINT "PATIENT_SIGNATURES_FK5" FOREIGN KEY ("CHAIN_ID", "REVOKED_AT_STORE_NHIN_ID") REFERENCES "SEC_ADMIN"."EPS_SEC_STORE" ("CHAIN_NHIN_ID", "STORE_NHIN_ID") ENABLE;'),
+	 ('ALTER TABLE "EPS"."PATIENT_UNMERGE_LOCK" ADD CONSTRAINT "PATIENT_UNMERGE_FK_ESCHAIN" FOREIGN KEY ("CHAIN_ID") REFERENCES "SEC_ADMIN"."EPS_SEC_CHAIN" ("CHAIN_NHIN_ID") DEFERRABLE INITIALLY DEFERRED ENABLE;'),
+	 ('ALTER TABLE "EPS"."PATIENT_UNMERGE_LOCK" ADD CONSTRAINT "PATIENT_UNMERGE_FK_ESSTORE" FOREIGN KEY ("CHAIN_ID", "NHIN_ID") REFERENCES "SEC_ADMIN"."EPS_SEC_STORE" ("CHAIN_NHIN_ID", "STORE_NHIN_ID") DEFERRABLE INITIALLY DEFERRED ENABLE;');
+INSERT INTO "SELECT
+    'ALTER TABLE ""' || c.owner || '"".""' || c.table_name || 
+    '"" ADD CONSTRAINT ""' || c.constraint_name || '"" FOREIGN KEY (' || cols.column_list || ') ' ||
+    'REFERENCES ""' || r.owner || '"".""' || r.table_name || '"" (' || r_cols.column_list || ') ' ||
+    CASE 
+        WHEN c.deferrable = 'DEFERRABLE' THEN 'DEFERRABLE '
+        ELSE ''
+    END ||
+    CASE 
+        WHEN c.deferred = 'DEFERRED' THEN 'INITIALLY DEFERRED '
+        ELSE ''
+    END ||
+    'ENABLE;' AS alter_statement
+FROM all_constraints c
+JOIN (
+    SELECT owner, constraint_name,
+           LISTAGG('""' || column_name || '""', ', ') 
+           WITHIN GROUP (ORDER BY position) AS column_list
+    FROM all_cons_columns
+    GROUP BY owner, constraint_name
+) cols
+    ON c.owner = cols.owner 
+   AND c.constraint_name = cols.constraint_name
+JOIN all_constraints r
+    ON c.r_owner = r.owner 
+   AND c.r_constraint_name = r.constraint_name
+JOIN (
+    SELECT owner, constraint_name,
+           LISTAGG('""' || column_name || '""', ', ') 
+           WITHIN GROUP (ORDER BY position) AS column_list
+    FROM all_cons_columns
+    GROUP BY owner, constraint_name
+) r_cols
+    ON r.owner = r_cols.owner 
+   AND r.constraint_name = r_cols.constraint_name
+WHERE c.constraint_type = 'R'   -- only FK
+  AND c.owner = 'EPS'           -- ✅ keep schema filter
+ORDER BY c.table_name, c.constraint_name" (ALTER_STATEMENT) VALUES
+	 ('ALTER TABLE "EPS"."PATIENT_UNMERGE_LOCK" ADD CONSTRAINT "PAT_UMMERGE_LOCK_FK_PATIENT" FOREIGN KEY ("CHAIN_ID", "ID_PATIENT") REFERENCES "EPS"."PATIENT" ("CHAIN_ID", "ID") DEFERRABLE INITIALLY DEFERRED ENABLE;'),
+	 ('ALTER TABLE "EPS"."PAYMENT" ADD CONSTRAINT "PAYMENT_FK_ESCHAIN" FOREIGN KEY ("CHAIN_ID") REFERENCES "SEC_ADMIN"."EPS_SEC_CHAIN" ("CHAIN_NHIN_ID") DEFERRABLE INITIALLY DEFERRED ENABLE;'),
+	 ('ALTER TABLE "EPS"."PAYMENT" ADD CONSTRAINT "PAYMENT_FK_ESSTORE" FOREIGN KEY ("CHAIN_ID", "NHIN_ID") REFERENCES "SEC_ADMIN"."EPS_SEC_STORE" ("CHAIN_NHIN_ID", "STORE_NHIN_ID") DEFERRABLE INITIALLY DEFERRED ENABLE;'),
+	 ('ALTER TABLE "EPS"."PA_NUM" ADD CONSTRAINT "PA_NUM_FK_ESCHAIN" FOREIGN KEY ("CHAIN_ID") REFERENCES "SEC_ADMIN"."EPS_SEC_CHAIN" ("CHAIN_NHIN_ID") DEFERRABLE INITIALLY DEFERRED ENABLE;'),
+	 ('ALTER TABLE "EPS"."PA_NUM" ADD CONSTRAINT "PA_NUM_FK_ESSTORE" FOREIGN KEY ("CHAIN_ID", "NHIN_ID") REFERENCES "SEC_ADMIN"."EPS_SEC_STORE" ("CHAIN_NHIN_ID", "STORE_NHIN_ID") DEFERRABLE INITIALLY DEFERRED ENABLE;'),
+	 ('ALTER TABLE "EPS"."PA_NUM" ADD CONSTRAINT "PA_NUM_FK_TX_TP" FOREIGN KEY ("CHAIN_ID", "ID_TX_TP") REFERENCES "EPS"."TX_TP" ("CHAIN_ID", "ID") DEFERRABLE INITIALLY DEFERRED ENABLE;'),
+	 ('ALTER TABLE "EPS"."PDX_SCHEMA_PROCESS_HISTORY" ADD CONSTRAINT "PDX_SCHEMA_PROCESS_HISTORY_FK1" FOREIGN KEY ("PDX_SCHEMA_UPD_PKGCALL_HIST_ID") REFERENCES "EPS"."PDX_SCHEMA_UPD_PKGCALL_HIST" ("ID") ENABLE;'),
+	 ('ALTER TABLE "EPS"."PDX_SCHEMA_PROCESS_HISTORY" ADD CONSTRAINT "PDX_SCHEMA_PROCESS_HISTORY_FK2" FOREIGN KEY ("PDX_SCHEMA_VERSION_HISTORY_ID") REFERENCES "EPS"."PDX_SCHEMA_VERSION_HISTORY" ("ID") ENABLE;'),
+	 ('ALTER TABLE "EPS"."PDX_SCHEMA_TASK_ERROR_LOG" ADD CONSTRAINT "PDX_SCHEMA_TASK_ERROR_LOG_FK1" FOREIGN KEY ("ID") REFERENCES "EPS"."PDX_SCHEMA_TASK_HISTORY" ("ID") ENABLE;'),
+	 ('ALTER TABLE "EPS"."PDX_SCHEMA_TASK_HISTORY" ADD CONSTRAINT "PDX_SCHEMA_TASK_HISTORY_FK1" FOREIGN KEY ("PDX_SCHEMA_UPD_PKGCALL_HIST_ID") REFERENCES "EPS"."PDX_SCHEMA_UPD_PKGCALL_HIST" ("ID") ENABLE;');
+INSERT INTO "SELECT
+    'ALTER TABLE ""' || c.owner || '"".""' || c.table_name || 
+    '"" ADD CONSTRAINT ""' || c.constraint_name || '"" FOREIGN KEY (' || cols.column_list || ') ' ||
+    'REFERENCES ""' || r.owner || '"".""' || r.table_name || '"" (' || r_cols.column_list || ') ' ||
+    CASE 
+        WHEN c.deferrable = 'DEFERRABLE' THEN 'DEFERRABLE '
+        ELSE ''
+    END ||
+    CASE 
+        WHEN c.deferred = 'DEFERRED' THEN 'INITIALLY DEFERRED '
+        ELSE ''
+    END ||
+    'ENABLE;' AS alter_statement
+FROM all_constraints c
+JOIN (
+    SELECT owner, constraint_name,
+           LISTAGG('""' || column_name || '""', ', ') 
+           WITHIN GROUP (ORDER BY position) AS column_list
+    FROM all_cons_columns
+    GROUP BY owner, constraint_name
+) cols
+    ON c.owner = cols.owner 
+   AND c.constraint_name = cols.constraint_name
+JOIN all_constraints r
+    ON c.r_owner = r.owner 
+   AND c.r_constraint_name = r.constraint_name
+JOIN (
+    SELECT owner, constraint_name,
+           LISTAGG('""' || column_name || '""', ', ') 
+           WITHIN GROUP (ORDER BY position) AS column_list
+    FROM all_cons_columns
+    GROUP BY owner, constraint_name
+) r_cols
+    ON r.owner = r_cols.owner 
+   AND r.constraint_name = r_cols.constraint_name
+WHERE c.constraint_type = 'R'   -- only FK
+  AND c.owner = 'EPS'           -- ✅ keep schema filter
+ORDER BY c.table_name, c.constraint_name" (ALTER_STATEMENT) VALUES
+	 ('ALTER TABLE "EPS"."PDX_SCHEMA_TASK_HISTORY" ADD CONSTRAINT "PDX_SCHEMA_TASK_HISTORY_FK2" FOREIGN KEY ("PDX_SCHEMA_VERSION_HISTORY_ID") REFERENCES "EPS"."PDX_SCHEMA_VERSION_HISTORY" ("ID") ENABLE;'),
+	 ('ALTER TABLE "EPS"."PDX_SCHEMA_UPD_HELPER_DEBUG_D" ADD CONSTRAINT "PDX_SCHEMA_UPD_HLPR_DBG_D_FK1" FOREIGN KEY ("PDX_SCHEMA_UPD_HLPR_DBG_H_ID") REFERENCES "EPS"."PDX_SCHEMA_UPD_HELPER_DEBUG_H" ("ID") ENABLE;'),
+	 ('ALTER TABLE "EPS"."PDX_SCHEMA_UPD_PKGCALL_ERR_LOG" ADD CONSTRAINT "PDX_SCHEMA_UPD_PKGCALL_ELG_FK1" FOREIGN KEY ("ID") REFERENCES "EPS"."PDX_SCHEMA_UPD_PKGCALL_HIST" ("ID") ENABLE;'),
+	 ('ALTER TABLE "EPS"."PDX_SCHEMA_VERSION_ERROR_LOG" ADD CONSTRAINT "PDX_SCHEMA_VERSION_ERR_LOG_FK1" FOREIGN KEY ("ID") REFERENCES "EPS"."PDX_SCHEMA_VERSION_HISTORY" ("ID") ENABLE;'),
+	 ('ALTER TABLE "EPS"."PDX_SCHEMA_VERSION_HISTORY" ADD CONSTRAINT "PDX_SCHEMA_VERSION_HISTORY_FK1" FOREIGN KEY ("PDX_SCHEMA_UPD_PKGCALL_HIST_ID") REFERENCES "EPS"."PDX_SCHEMA_UPD_PKGCALL_HIST" ("ID") ENABLE;'),
+	 ('ALTER TABLE "EPS"."PRESCRIBER" ADD CONSTRAINT "PRESCRIBER_FK_ESCHAIN" FOREIGN KEY ("CHAIN_ID") REFERENCES "SEC_ADMIN"."EPS_SEC_CHAIN" ("CHAIN_NHIN_ID") DEFERRABLE INITIALLY DEFERRED ENABLE;'),
+	 ('ALTER TABLE "EPS"."PRESCRIBER" ADD CONSTRAINT "PRESCRIBER_FK_ESSTORE" FOREIGN KEY ("CHAIN_ID", "NHIN_ID") REFERENCES "SEC_ADMIN"."EPS_SEC_STORE" ("CHAIN_NHIN_ID", "STORE_NHIN_ID") DEFERRABLE INITIALLY DEFERRED ENABLE;'),
+	 ('ALTER TABLE "EPS"."PRIOR_ADVERSE_REACTION" ADD CONSTRAINT "PRIOR_ADVERSE_REACTION_FK1" FOREIGN KEY ("CHAIN_ID") REFERENCES "SEC_ADMIN"."EPS_SEC_CHAIN" ("CHAIN_NHIN_ID") ENABLE;'),
+	 ('ALTER TABLE "EPS"."PRIOR_ADVERSE_REACTION" ADD CONSTRAINT "PRIOR_ADVERSE_REACTION_FK2" FOREIGN KEY ("CHAIN_ID", "ID_PATIENT") REFERENCES "EPS"."PATIENT" ("CHAIN_ID", "ID") DEFERRABLE INITIALLY DEFERRED ENABLE;'),
+	 ('ALTER TABLE "EPS"."PURGE_FLOW_MAP" ADD CONSTRAINT "PURGE_FLOW_MAP_FK1" FOREIGN KEY ("PURGE_RUN_DETAILS_ID") REFERENCES "EPS"."PURGE_RUN_DETAILS" ("ID") ENABLE;');
+INSERT INTO "SELECT
+    'ALTER TABLE ""' || c.owner || '"".""' || c.table_name || 
+    '"" ADD CONSTRAINT ""' || c.constraint_name || '"" FOREIGN KEY (' || cols.column_list || ') ' ||
+    'REFERENCES ""' || r.owner || '"".""' || r.table_name || '"" (' || r_cols.column_list || ') ' ||
+    CASE 
+        WHEN c.deferrable = 'DEFERRABLE' THEN 'DEFERRABLE '
+        ELSE ''
+    END ||
+    CASE 
+        WHEN c.deferred = 'DEFERRED' THEN 'INITIALLY DEFERRED '
+        ELSE ''
+    END ||
+    'ENABLE;' AS alter_statement
+FROM all_constraints c
+JOIN (
+    SELECT owner, constraint_name,
+           LISTAGG('""' || column_name || '""', ', ') 
+           WITHIN GROUP (ORDER BY position) AS column_list
+    FROM all_cons_columns
+    GROUP BY owner, constraint_name
+) cols
+    ON c.owner = cols.owner 
+   AND c.constraint_name = cols.constraint_name
+JOIN all_constraints r
+    ON c.r_owner = r.owner 
+   AND c.r_constraint_name = r.constraint_name
+JOIN (
+    SELECT owner, constraint_name,
+           LISTAGG('""' || column_name || '""', ', ') 
+           WITHIN GROUP (ORDER BY position) AS column_list
+    FROM all_cons_columns
+    GROUP BY owner, constraint_name
+) r_cols
+    ON r.owner = r_cols.owner 
+   AND r.constraint_name = r_cols.constraint_name
+WHERE c.constraint_type = 'R'   -- only FK
+  AND c.owner = 'EPS'           -- ✅ keep schema filter
+ORDER BY c.table_name, c.constraint_name" (ALTER_STATEMENT) VALUES
+	 ('ALTER TABLE "EPS"."PURGE_FLOW_MAP" ADD CONSTRAINT "PURGE_FLOW_MAP_FK2" FOREIGN KEY ("PURGE_REC_RUN_DETAILS_ID") REFERENCES "EPS"."PURGE_RUN_DETAILS" ("ID") ENABLE;'),
+	 ('ALTER TABLE "EPS"."PURGE_INDEX_REBUILD_LOG" ADD CONSTRAINT "PURGE_INDEX_REBUILD_LOG_FK1" FOREIGN KEY ("PURGE_RUN_DETAILS_ID") REFERENCES "EPS"."PURGE_RUN_DETAILS" ("ID") ENABLE;'),
+	 ('ALTER TABLE "EPS"."PURGE_INDEX_REBUILD_LOG" ADD CONSTRAINT "PURGE_INDEX_REBUILD_LOG_FK2" FOREIGN KEY ("PURGE_ERROR_LOG_ID") REFERENCES "EPS"."PURGE_ERROR_LOG" ("ID") ENABLE;'),
+	 ('ALTER TABLE "EPS"."PURGE_RUN_DETAILS" ADD CONSTRAINT "PURGE_RUN_DETAILS_FK1" FOREIGN KEY ("PURGE_ERROR_LOG_ID") REFERENCES "EPS"."PURGE_ERROR_LOG" ("ID") ENABLE;'),
+	 ('ALTER TABLE "EPS"."QUEUECOMMAND" ADD CONSTRAINT "QUEUECMD_FK_ESCHAIN" FOREIGN KEY ("CHAIN_ID") REFERENCES "SEC_ADMIN"."EPS_SEC_CHAIN" ("CHAIN_NHIN_ID") DEFERRABLE INITIALLY DEFERRED ENABLE;'),
+	 ('ALTER TABLE "EPS"."QUEUECOMMAND" ADD CONSTRAINT "QUEUECMD_FK_ESSTORE" FOREIGN KEY ("CHAIN_ID", "NHIN_ID") REFERENCES "SEC_ADMIN"."EPS_SEC_STORE" ("CHAIN_NHIN_ID", "STORE_NHIN_ID") DEFERRABLE INITIALLY DEFERRED ENABLE;'),
+	 ('ALTER TABLE "EPS"."QUEUECOMMAND" ADD CONSTRAINT "QUEUECMD_FK_PATIENT" FOREIGN KEY ("CHAIN_ID", "ID_PATIENT") REFERENCES "EPS"."PATIENT" ("CHAIN_ID", "ID") DEFERRABLE INITIALLY DEFERRED ENABLE;'),
+	 ('ALTER TABLE "EPS"."RENAL_MEASUREMENT" ADD CONSTRAINT "RENAL_MEASUREMENT_FK1" FOREIGN KEY ("CHAIN_ID") REFERENCES "SEC_ADMIN"."EPS_SEC_CHAIN" ("CHAIN_NHIN_ID") ENABLE;'),
+	 ('ALTER TABLE "EPS"."RENAL_MEASUREMENT" ADD CONSTRAINT "RENAL_MEASUREMENT_FK2" FOREIGN KEY ("CHAIN_ID", "ID_PATIENT") REFERENCES "EPS"."PATIENT" ("CHAIN_ID", "ID") ENABLE;'),
+	 ('ALTER TABLE "EPS"."RX_TX" ADD CONSTRAINT "RX_TX_FK_ALT_PRESCRIBER" FOREIGN KEY ("CHAIN_ID", "ID_ALT_PRESCRIBER") REFERENCES "EPS"."ALT_PRESCRIBER" ("CHAIN_ID", "ID") DEFERRABLE INITIALLY DEFERRED ENABLE;');
+INSERT INTO "SELECT
+    'ALTER TABLE ""' || c.owner || '"".""' || c.table_name || 
+    '"" ADD CONSTRAINT ""' || c.constraint_name || '"" FOREIGN KEY (' || cols.column_list || ') ' ||
+    'REFERENCES ""' || r.owner || '"".""' || r.table_name || '"" (' || r_cols.column_list || ') ' ||
+    CASE 
+        WHEN c.deferrable = 'DEFERRABLE' THEN 'DEFERRABLE '
+        ELSE ''
+    END ||
+    CASE 
+        WHEN c.deferred = 'DEFERRED' THEN 'INITIALLY DEFERRED '
+        ELSE ''
+    END ||
+    'ENABLE;' AS alter_statement
+FROM all_constraints c
+JOIN (
+    SELECT owner, constraint_name,
+           LISTAGG('""' || column_name || '""', ', ') 
+           WITHIN GROUP (ORDER BY position) AS column_list
+    FROM all_cons_columns
+    GROUP BY owner, constraint_name
+) cols
+    ON c.owner = cols.owner 
+   AND c.constraint_name = cols.constraint_name
+JOIN all_constraints r
+    ON c.r_owner = r.owner 
+   AND c.r_constraint_name = r.constraint_name
+JOIN (
+    SELECT owner, constraint_name,
+           LISTAGG('""' || column_name || '""', ', ') 
+           WITHIN GROUP (ORDER BY position) AS column_list
+    FROM all_cons_columns
+    GROUP BY owner, constraint_name
+) r_cols
+    ON r.owner = r_cols.owner 
+   AND r.constraint_name = r_cols.constraint_name
+WHERE c.constraint_type = 'R'   -- only FK
+  AND c.owner = 'EPS'           -- ✅ keep schema filter
+ORDER BY c.table_name, c.constraint_name" (ALTER_STATEMENT) VALUES
+	 ('ALTER TABLE "EPS"."RX_TX" ADD CONSTRAINT "RX_TX_FK_ESCHAIN" FOREIGN KEY ("CHAIN_ID") REFERENCES "SEC_ADMIN"."EPS_SEC_CHAIN" ("CHAIN_NHIN_ID") DEFERRABLE INITIALLY DEFERRED ENABLE;'),
+	 ('ALTER TABLE "EPS"."RX_TX" ADD CONSTRAINT "RX_TX_FK_ESSTORE" FOREIGN KEY ("CHAIN_ID", "NHIN_ID") REFERENCES "SEC_ADMIN"."EPS_SEC_STORE" ("CHAIN_NHIN_ID", "STORE_NHIN_ID") DEFERRABLE INITIALLY DEFERRED ENABLE;'),
+	 ('ALTER TABLE "EPS"."RX_TX" ADD CONSTRAINT "RX_TX_FK_MOD_PCM" FOREIGN KEY ("CHAIN_ID", "ID_MODPCM") REFERENCES "EPS"."MOD_PCM" ("CHAIN_ID", "ID") DEFERRABLE INITIALLY DEFERRED ENABLE;'),
+	 ('ALTER TABLE "EPS"."RX_TX" ADD CONSTRAINT "RX_TX_FK_PATIENT" FOREIGN KEY ("CHAIN_ID", "ID_PATIENT") REFERENCES "EPS"."PATIENT" ("CHAIN_ID", "ID") DEFERRABLE INITIALLY DEFERRED ENABLE;'),
+	 ('ALTER TABLE "EPS"."RX_TX" ADD CONSTRAINT "RX_TX_FK_PRESCRIBER" FOREIGN KEY ("CHAIN_ID", "ID_PRESCRIBER") REFERENCES "EPS"."PRESCRIBER" ("CHAIN_ID", "ID") DEFERRABLE INITIALLY DEFERRED ENABLE;'),
+	 ('ALTER TABLE "EPS"."RX_TX_DIAGNOSIS_CODES" ADD CONSTRAINT "RX_TX_DIAGNOSIS_CODES_FK1" FOREIGN KEY ("CHAIN_ID") REFERENCES "SEC_ADMIN"."EPS_SEC_CHAIN" ("CHAIN_NHIN_ID") DEFERRABLE INITIALLY DEFERRED ENABLE;'),
+	 ('ALTER TABLE "EPS"."RX_TX_DIAGNOSIS_CODES" ADD CONSTRAINT "RX_TX_DIAGNOSIS_CODES_FK2" FOREIGN KEY ("CHAIN_ID", "ID_RX_TX") REFERENCES "EPS"."RX_TX" ("CHAIN_ID", "ID") DEFERRABLE INITIALLY DEFERRED ENABLE;'),
+	 ('ALTER TABLE "EPS"."RX_TX_DUR_LIST" ADD CONSTRAINT "RX_TX_DUR_LIST_FK_ESCHAIN" FOREIGN KEY ("CHAIN_ID") REFERENCES "SEC_ADMIN"."EPS_SEC_CHAIN" ("CHAIN_NHIN_ID") DEFERRABLE INITIALLY DEFERRED ENABLE;'),
+	 ('ALTER TABLE "EPS"."RX_TX_DUR_LIST" ADD CONSTRAINT "RX_TX_DUR_LIST_FK_IDRXTX" FOREIGN KEY ("CHAIN_ID", "ID_RX_TX") REFERENCES "EPS"."RX_TX" ("CHAIN_ID", "ID") DEFERRABLE INITIALLY DEFERRED ENABLE;'),
+	 ('ALTER TABLE "EPS"."RX_TX_PAYMENT" ADD CONSTRAINT "RX_TX_PAYMENT_FK_CHAIN_PAYID" FOREIGN KEY ("CHAIN_ID", "ID_PAYMENT") REFERENCES "EPS"."PAYMENT" ("CHAIN_ID", "ID") DEFERRABLE INITIALLY DEFERRED ENABLE;');
+INSERT INTO "SELECT
+    'ALTER TABLE ""' || c.owner || '"".""' || c.table_name || 
+    '"" ADD CONSTRAINT ""' || c.constraint_name || '"" FOREIGN KEY (' || cols.column_list || ') ' ||
+    'REFERENCES ""' || r.owner || '"".""' || r.table_name || '"" (' || r_cols.column_list || ') ' ||
+    CASE 
+        WHEN c.deferrable = 'DEFERRABLE' THEN 'DEFERRABLE '
+        ELSE ''
+    END ||
+    CASE 
+        WHEN c.deferred = 'DEFERRED' THEN 'INITIALLY DEFERRED '
+        ELSE ''
+    END ||
+    'ENABLE;' AS alter_statement
+FROM all_constraints c
+JOIN (
+    SELECT owner, constraint_name,
+           LISTAGG('""' || column_name || '""', ', ') 
+           WITHIN GROUP (ORDER BY position) AS column_list
+    FROM all_cons_columns
+    GROUP BY owner, constraint_name
+) cols
+    ON c.owner = cols.owner 
+   AND c.constraint_name = cols.constraint_name
+JOIN all_constraints r
+    ON c.r_owner = r.owner 
+   AND c.r_constraint_name = r.constraint_name
+JOIN (
+    SELECT owner, constraint_name,
+           LISTAGG('""' || column_name || '""', ', ') 
+           WITHIN GROUP (ORDER BY position) AS column_list
+    FROM all_cons_columns
+    GROUP BY owner, constraint_name
+) r_cols
+    ON r.owner = r_cols.owner 
+   AND r.constraint_name = r_cols.constraint_name
+WHERE c.constraint_type = 'R'   -- only FK
+  AND c.owner = 'EPS'           -- ✅ keep schema filter
+ORDER BY c.table_name, c.constraint_name" (ALTER_STATEMENT) VALUES
+	 ('ALTER TABLE "EPS"."RX_TX_PAYMENT" ADD CONSTRAINT "RX_TX_PAYMENT_FK_ESCHAIN" FOREIGN KEY ("CHAIN_ID") REFERENCES "SEC_ADMIN"."EPS_SEC_CHAIN" ("CHAIN_NHIN_ID") DEFERRABLE INITIALLY DEFERRED ENABLE;'),
+	 ('ALTER TABLE "EPS"."RX_TX_PAYMENT" ADD CONSTRAINT "RX_TX_PAYMENT_FK_ESSTORE" FOREIGN KEY ("CHAIN_ID", "NHIN_ID") REFERENCES "SEC_ADMIN"."EPS_SEC_STORE" ("CHAIN_NHIN_ID", "STORE_NHIN_ID") DEFERRABLE INITIALLY DEFERRED ENABLE;'),
+	 ('ALTER TABLE "EPS"."RX_TX_SIG_STRUCTURED_PART" ADD CONSTRAINT "RX_TX_SIG_STR_PRT_FK_ESCHAIN" FOREIGN KEY ("CHAIN_ID") REFERENCES "SEC_ADMIN"."EPS_SEC_CHAIN" ("CHAIN_NHIN_ID") DEFERRABLE INITIALLY DEFERRED ENABLE;'),
+	 ('ALTER TABLE "EPS"."RX_TX_SIG_STRUCTURED_PART" ADD CONSTRAINT "RX_TX_SIG_STR_PRT_FK_RX_TX" FOREIGN KEY ("CHAIN_ID", "ID_RX_TX") REFERENCES "EPS"."RX_TX" ("CHAIN_ID", "ID") DEFERRABLE INITIALLY DEFERRED ENABLE;'),
+	 ('ALTER TABLE "EPS"."SIGNATURE" ADD CONSTRAINT "SIGNATURE_FK_ESCHAIN" FOREIGN KEY ("CHAIN_ID") REFERENCES "SEC_ADMIN"."EPS_SEC_CHAIN" ("CHAIN_NHIN_ID") DEFERRABLE INITIALLY DEFERRED ENABLE;'),
+	 ('ALTER TABLE "EPS"."SIGNATURE" ADD CONSTRAINT "SIGNATURE_FK_PATIENT" FOREIGN KEY ("CHAIN_ID", "ID_PATIENT") REFERENCES "EPS"."PATIENT" ("CHAIN_ID", "ID") DEFERRABLE INITIALLY DEFERRED ENABLE;'),
+	 ('ALTER TABLE "EPS"."TELEPHONE" ADD CONSTRAINT "TELEPHONE_FK_ESCHAIN" FOREIGN KEY ("CHAIN_ID") REFERENCES "SEC_ADMIN"."EPS_SEC_CHAIN" ("CHAIN_NHIN_ID") DEFERRABLE INITIALLY DEFERRED ENABLE;'),
+	 ('ALTER TABLE "EPS"."TELEPHONE" ADD CONSTRAINT "TELEPHONE_FK_ESSTORE" FOREIGN KEY ("CHAIN_ID", "NHIN_ID") REFERENCES "SEC_ADMIN"."EPS_SEC_STORE" ("CHAIN_NHIN_ID", "STORE_NHIN_ID") DEFERRABLE INITIALLY DEFERRED ENABLE;'),
+	 ('ALTER TABLE "EPS"."TELEPHONE" ADD CONSTRAINT "TELEPHONE_FK_PATIENT" FOREIGN KEY ("CHAIN_ID", "ID_PATIENT") REFERENCES "EPS"."PATIENT" ("CHAIN_ID", "ID") DEFERRABLE INITIALLY DEFERRED ENABLE;'),
+	 ('ALTER TABLE "EPS"."TP_LINK" ADD CONSTRAINT "TP_LINK_FK_CARD" FOREIGN KEY ("CHAIN_ID", "ID_CARD") REFERENCES "EPS"."CARD" ("CHAIN_ID", "ID") DEFERRABLE INITIALLY DEFERRED ENABLE;');
+INSERT INTO "SELECT
+    'ALTER TABLE ""' || c.owner || '"".""' || c.table_name || 
+    '"" ADD CONSTRAINT ""' || c.constraint_name || '"" FOREIGN KEY (' || cols.column_list || ') ' ||
+    'REFERENCES ""' || r.owner || '"".""' || r.table_name || '"" (' || r_cols.column_list || ') ' ||
+    CASE 
+        WHEN c.deferrable = 'DEFERRABLE' THEN 'DEFERRABLE '
+        ELSE ''
+    END ||
+    CASE 
+        WHEN c.deferred = 'DEFERRED' THEN 'INITIALLY DEFERRED '
+        ELSE ''
+    END ||
+    'ENABLE;' AS alter_statement
+FROM all_constraints c
+JOIN (
+    SELECT owner, constraint_name,
+           LISTAGG('""' || column_name || '""', ', ') 
+           WITHIN GROUP (ORDER BY position) AS column_list
+    FROM all_cons_columns
+    GROUP BY owner, constraint_name
+) cols
+    ON c.owner = cols.owner 
+   AND c.constraint_name = cols.constraint_name
+JOIN all_constraints r
+    ON c.r_owner = r.owner 
+   AND c.r_constraint_name = r.constraint_name
+JOIN (
+    SELECT owner, constraint_name,
+           LISTAGG('""' || column_name || '""', ', ') 
+           WITHIN GROUP (ORDER BY position) AS column_list
+    FROM all_cons_columns
+    GROUP BY owner, constraint_name
+) r_cols
+    ON r.owner = r_cols.owner 
+   AND r.constraint_name = r_cols.constraint_name
+WHERE c.constraint_type = 'R'   -- only FK
+  AND c.owner = 'EPS'           -- ✅ keep schema filter
+ORDER BY c.table_name, c.constraint_name" (ALTER_STATEMENT) VALUES
+	 ('ALTER TABLE "EPS"."TP_LINK" ADD CONSTRAINT "TP_LINK_FK_ESCHAIN" FOREIGN KEY ("CHAIN_ID") REFERENCES "SEC_ADMIN"."EPS_SEC_CHAIN" ("CHAIN_NHIN_ID") DEFERRABLE INITIALLY DEFERRED ENABLE;'),
+	 ('ALTER TABLE "EPS"."TP_LINK" ADD CONSTRAINT "TP_LINK_FK_ESSTORE" FOREIGN KEY ("CHAIN_ID", "NHIN_ID") REFERENCES "SEC_ADMIN"."EPS_SEC_STORE" ("CHAIN_NHIN_ID", "STORE_NHIN_ID") DEFERRABLE INITIALLY DEFERRED ENABLE;'),
+	 ('ALTER TABLE "EPS"."TP_LINK" ADD CONSTRAINT "TP_LINK_FK_PATIENT" FOREIGN KEY ("CHAIN_ID", "ID_PATIENT") REFERENCES "EPS"."PATIENT" ("CHAIN_ID", "ID") DEFERRABLE INITIALLY DEFERRED ENABLE;'),
+	 ('ALTER TABLE "EPS"."TX_CRED" ADD CONSTRAINT "TX_CRED_FK_ESCHAIN" FOREIGN KEY ("CHAIN_ID") REFERENCES "SEC_ADMIN"."EPS_SEC_CHAIN" ("CHAIN_NHIN_ID") DEFERRABLE INITIALLY DEFERRED ENABLE;'),
+	 ('ALTER TABLE "EPS"."TX_CRED" ADD CONSTRAINT "TX_CRED_FK_ESSTORE" FOREIGN KEY ("CHAIN_ID", "NHIN_ID") REFERENCES "SEC_ADMIN"."EPS_SEC_STORE" ("CHAIN_NHIN_ID", "STORE_NHIN_ID") DEFERRABLE INITIALLY DEFERRED ENABLE;'),
+	 ('ALTER TABLE "EPS"."TX_CRED" ADD CONSTRAINT "TX_CRED_FK_RX_TX" FOREIGN KEY ("CHAIN_ID", "ID_RX_TX") REFERENCES "EPS"."RX_TX" ("CHAIN_ID", "ID") DEFERRABLE INITIALLY DEFERRED ENABLE;'),
+	 ('ALTER TABLE "EPS"."TX_LOT" ADD CONSTRAINT "TX_LOT_FK_ESCHAIN" FOREIGN KEY ("CHAIN_ID") REFERENCES "SEC_ADMIN"."EPS_SEC_CHAIN" ("CHAIN_NHIN_ID") DEFERRABLE INITIALLY DEFERRED ENABLE;'),
+	 ('ALTER TABLE "EPS"."TX_LOT" ADD CONSTRAINT "TX_LOT_FK_RX_TX" FOREIGN KEY ("CHAIN_ID", "ID_RX_TX") REFERENCES "EPS"."RX_TX" ("CHAIN_ID", "ID") DEFERRABLE INITIALLY DEFERRED ENABLE;'),
+	 ('ALTER TABLE "EPS"."TX_TP" ADD CONSTRAINT "TX_TP_FK_ESCHAIN" FOREIGN KEY ("CHAIN_ID") REFERENCES "SEC_ADMIN"."EPS_SEC_CHAIN" ("CHAIN_NHIN_ID") DEFERRABLE INITIALLY DEFERRED ENABLE;'),
+	 ('ALTER TABLE "EPS"."TX_TP" ADD CONSTRAINT "TX_TP_FK_ESSTORE" FOREIGN KEY ("CHAIN_ID", "NHIN_ID") REFERENCES "SEC_ADMIN"."EPS_SEC_STORE" ("CHAIN_NHIN_ID", "STORE_NHIN_ID") DEFERRABLE INITIALLY DEFERRED ENABLE;');
+INSERT INTO "SELECT
+    'ALTER TABLE ""' || c.owner || '"".""' || c.table_name || 
+    '"" ADD CONSTRAINT ""' || c.constraint_name || '"" FOREIGN KEY (' || cols.column_list || ') ' ||
+    'REFERENCES ""' || r.owner || '"".""' || r.table_name || '"" (' || r_cols.column_list || ') ' ||
+    CASE 
+        WHEN c.deferrable = 'DEFERRABLE' THEN 'DEFERRABLE '
+        ELSE ''
+    END ||
+    CASE 
+        WHEN c.deferred = 'DEFERRED' THEN 'INITIALLY DEFERRED '
+        ELSE ''
+    END ||
+    'ENABLE;' AS alter_statement
+FROM all_constraints c
+JOIN (
+    SELECT owner, constraint_name,
+           LISTAGG('""' || column_name || '""', ', ') 
+           WITHIN GROUP (ORDER BY position) AS column_list
+    FROM all_cons_columns
+    GROUP BY owner, constraint_name
+) cols
+    ON c.owner = cols.owner 
+   AND c.constraint_name = cols.constraint_name
+JOIN all_constraints r
+    ON c.r_owner = r.owner 
+   AND c.r_constraint_name = r.constraint_name
+JOIN (
+    SELECT owner, constraint_name,
+           LISTAGG('""' || column_name || '""', ', ') 
+           WITHIN GROUP (ORDER BY position) AS column_list
+    FROM all_cons_columns
+    GROUP BY owner, constraint_name
+) r_cols
+    ON r.owner = r_cols.owner 
+   AND r.constraint_name = r_cols.constraint_name
+WHERE c.constraint_type = 'R'   -- only FK
+  AND c.owner = 'EPS'           -- ✅ keep schema filter
+ORDER BY c.table_name, c.constraint_name" (ALTER_STATEMENT) VALUES
+	 ('ALTER TABLE "EPS"."TX_TP" ADD CONSTRAINT "TX_TP_FK_RX_TX" FOREIGN KEY ("CHAIN_ID", "ID_RX_TX") REFERENCES "EPS"."RX_TX" ("CHAIN_ID", "ID") DEFERRABLE INITIALLY DEFERRED ENABLE;'),
+	 ('ALTER TABLE "EPS"."VERSION" ADD CONSTRAINT "VERSION_FK_ESCHAIN" FOREIGN KEY ("CHAIN_ID") REFERENCES "SEC_ADMIN"."EPS_SEC_CHAIN" ("CHAIN_NHIN_ID") DEFERRABLE INITIALLY DEFERRED ENABLE;'),
+	 ('ALTER TABLE "EPS"."VIAL_INFO" ADD CONSTRAINT "VIAL_INFO_FK_ESCHAIN" FOREIGN KEY ("CHAIN_ID") REFERENCES "SEC_ADMIN"."EPS_SEC_CHAIN" ("CHAIN_NHIN_ID") DEFERRABLE INITIALLY DEFERRED ENABLE;'),
+	 ('ALTER TABLE "EPS"."VIAL_INFO" ADD CONSTRAINT "VIAL_INFO_FK_RX_TX" FOREIGN KEY ("CHAIN_ID", "ID_RX_TX") REFERENCES "EPS"."RX_TX" ("CHAIN_ID", "ID") DEFERRABLE INITIALLY DEFERRED ENABLE;'),
+	 ('ALTER TABLE "EPS"."VISUALLY_IMPAIRED_DETAIL" ADD CONSTRAINT "VISUALLY_IMPAIRED_DETAIL_FK1" FOREIGN KEY ("CHAIN_ID", "ID_PATIENT") REFERENCES "EPS"."PATIENT" ("CHAIN_ID", "ID") ENABLE;'),
+	 ('ALTER TABLE "EPS"."VISUALLY_IMPAIRED_DETAIL" ADD CONSTRAINT "VISUALLY_IMPAIRED_DETAIL_FK2" FOREIGN KEY ("CHAIN_ID") REFERENCES "SEC_ADMIN"."EPS_SEC_CHAIN" ("CHAIN_NHIN_ID") ENABLE;'),
+	 ('ALTER TABLE "EPS"."WORKMANS_COMP" ADD CONSTRAINT "WORKCOMP_FK_CARD" FOREIGN KEY ("CHAIN_ID", "ID_CARD") REFERENCES "EPS"."CARD" ("CHAIN_ID", "ID") DEFERRABLE INITIALLY DEFERRED ENABLE;'),
+	 ('ALTER TABLE "EPS"."WORKMANS_COMP" ADD CONSTRAINT "WORKCOMP_FK_ESCHAIN" FOREIGN KEY ("CHAIN_ID") REFERENCES "SEC_ADMIN"."EPS_SEC_CHAIN" ("CHAIN_NHIN_ID") DEFERRABLE INITIALLY DEFERRED ENABLE;'),
+	 ('ALTER TABLE "EPS"."WORKMANS_COMP" ADD CONSTRAINT "WORKCOMP_FK_ESSTORE" FOREIGN KEY ("CHAIN_ID", "NHIN_ID") REFERENCES "SEC_ADMIN"."EPS_SEC_STORE" ("CHAIN_NHIN_ID", "STORE_NHIN_ID") DEFERRABLE INITIALLY DEFERRED ENABLE;');
