@@ -1,0 +1,28 @@
+At C:\Users\cnedunuri\Documents\DBRepo\Simple-Verify.ps1:19 char:44
++ ... if ($count -eq 6) { "âo" PASS" } elseif ($count -eq 1) { "NOT PARTITI ...
++                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Unexpected token 'PASS" } elseif ($count -eq 1) { "NOT' in expression or 
+statement.
+At C:\Users\cnedunuri\Documents\DBRepo\Simple-Verify.ps1:35 char:56
++ Write-Host "`nResults saved to verification_results.txt"
++                                                        ~
+The string is missing the terminator: ".
+At C:\Users\cnedunuri\Documents\DBRepo\Simple-Verify.ps1:19 char:37
++         $status = if ($count -eq 6) { "âo" PASS" } elseif ($count -eq ...
++                                     ~
+Missing closing '}' in statement block or type definition.
+At C:\Users\cnedunuri\Documents\DBRepo\Simple-Verify.ps1:9 char:9
++     try {
++         ~
+Missing closing '}' in statement block or type definition.
+At C:\Users\cnedunuri\Documents\DBRepo\Simple-Verify.ps1:36 char:1
++ 
+The Try statement is missing its Catch or Finally block.
+At C:\Users\cnedunuri\Documents\DBRepo\Simple-Verify.ps1:8 char:25
++ foreach ($t in $tables) {
++                         ~
+Missing closing '}' in statement block or type definition.
+    + CategoryInfo          : ParserError: (:) [], ParentContainsErrorRecordEx 
+   ception
+    + FullyQualifiedErrorId : UnexpectedToken
+ 

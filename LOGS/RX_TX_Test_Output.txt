@@ -1,0 +1,59 @@
+====== RX_TX PARTITIONING TEST ======
+
+STEP 1: Current RX_TX partition count...
+[SUCCESS] Connected to Azure SQL successfully
+  Server: sql-epr-qa-eastus2.database.windows.net
+  Database: sqldb-epr-qa
+
+Query Results:
+: 1
+
+
+
+Before:  partitions
+
+STEP 2: Dropping child table FKs that reference RX_TX...
+[SUCCESS] Connected to Azure SQL successfully
+  Server: sql-epr-qa-eastus2.database.windows.net
+  Database: sqldb-epr-qa
+
+Query Results:
+
+
+STEP 3: Dropping outbound FKs from RX_TX...
+[SUCCESS] Connected to Azure SQL successfully
+  Server: sql-epr-qa-eastus2.database.windows.net
+  Database: sqldb-epr-qa
+
+Query Results:
+
+
+STEP 4: Dropping original RX_TX primary key...
+[SUCCESS] Connected to Azure SQL successfully
+  Server: sql-epr-qa-eastus2.database.windows.net
+  Database: sqldb-epr-qa
+
+Query Results:
+
+
+STEP 5: Creating partitioned composite PK (CHAIN_ID, RX_TX_ID)...
+[SUCCESS] Connected to Azure SQL successfully
+  Server: sql-epr-qa-eastus2.database.windows.net
+  Database: sqldb-epr-qa
+[ERROR] Exception calling "ExecuteReader" with "0" argument(s): "Table 'RX_TX' already has a primary key defined on it.
+Could not create constraint or index. See previous errors."
+
+
+STEP 6: Verifying partition count...
+[SUCCESS] Connected to Azure SQL successfully
+  Server: sql-epr-qa-eastus2.database.windows.net
+  Database: sqldb-epr-qa
+
+Query Results:
+: 1
+
+
+
+After:  partitions
+
+====== FAILED! RX_TX still has  partitions ======

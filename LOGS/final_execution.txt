@@ -1,0 +1,12 @@
+At C:\Users\cnedunuri\Documents\DBRepo\Execute-All-A1-Logging.ps1:102 char:2
++ }
++  ~
+The Try statement is missing its Catch or Finally block.
+At C:\Users\cnedunuri\Documents\DBRepo\Execute-All-A1-Logging.ps1:30 char:29
++ foreach ($table in $tables) {
++                             ~
+Missing closing '}' in statement block or type definition.
+    + CategoryInfo          : ParserError: (:) [], ParentContainsErrorRecordEx 
+   ception
+    + FullyQualifiedErrorId : MissingCatchOrFinally
+ 
